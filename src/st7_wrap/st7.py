@@ -307,7 +307,7 @@ class PlateIsotropicMaterial(_St7ArrayBase):
     ipPlateIsoSpecificHeat: float
 
 
-T_XYZ = typing.Sequence[float, float, float]
+T_XYZ = typing.Sequence[float]
 
 class Vector3(typing.NamedTuple):
     x: float

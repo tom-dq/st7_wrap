@@ -434,7 +434,7 @@ class StrainTensor(typing.NamedTuple):
         w = numpy.linalg.eigvals(self.as_np_array())
         return max(w)
 
-    def as_np_array(self) -> numpy.array:
+    def as_np_array(self):
         return numpy.array(
             [
                 [self.xx, 0.5 * self.xy, 0.5 * self.zx],

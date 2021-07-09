@@ -5,8 +5,9 @@ import collections
 
 import St7API
 
+
 class ConstMeta(typing.NamedTuple):
-    name: str   # What the class is going to be called
+    name: str  # What the class is going to be called
     example_member: str  # Any member of the enum.
 
 
@@ -32,6 +33,7 @@ _all_const_meta = [
     ConstMeta("ScaleType", "dsPercent"),
 ]
 
+
 def _parse_constants():
     """Read the code in St7API and parse out the constants."""
 
@@ -43,16 +45,15 @@ def _parse_constants():
         except ValueError:
             return False
 
-
     with open(St7API.__file__) as f_st7api:
         current_comment = None
         seen_comments = set()
 
         f_stripped = (l.strip() for l in f_st7api)
         for l in f_stripped:
-            is_comment_line = l.startswith('#')
+            is_comment_line = l.startswith("#")
             is_blank_line = not l
-            is_constant_line = '=' in l and is_int(l.split('=')[1])
+            is_constant_line = "=" in l and is_int(l.split("=")[1])
 
             if is_comment_line:
                 if l in seen_comments:
@@ -66,7 +67,7 @@ def _parse_constants():
 
             elif is_constant_line:
                 if current_comment:
-                    name, val = [x.strip() for x in l.split('=')]
+                    name, val = [x.strip() for x in l.split("=")]
                     yield current_comment, name, val
 
 
@@ -82,8 +83,7 @@ def _no_dupe_value_sanity_check(header_to_constants):
         lpVehicleForward = 0
         lpVehicleBackward = 1
 
-    Perhaps one day I will, but in the meantime remove such cases from the working data.
-"""
+    Perhaps one day I will, but in the meantime remove such cases from the working data."""
 
     clean_data = dict()
 
@@ -107,17 +107,16 @@ def _produce_one_enum(const_meta: ConstMeta, names_and_vals):
     yield f"class {const_meta.name}(enum.Enum):"
     for name, _ in names_and_vals:
         yield f"    {name} = St7API.{name}"
-    
-    yield ""
-    yield ""
 
+    yield ""
+    yield ""
 
 
 def produce_constants() -> typing.Iterable[str]:
     header_to_constants = collections.defaultdict(list)
 
     for current_comment, name, val in _parse_constants():
-        header_to_constants[current_comment].append( (name, val) )
+        header_to_constants[current_comment].append((name, val))
 
     # clean_headers_to_constants = _no_dupe_value_sanity_check(header_to_constants)
     clean_headers_to_constants = header_to_constants
@@ -143,18 +142,12 @@ def produce_constants() -> typing.Iterable[str]:
     yield "]"
     yield ""
 
-
     for const_meta in _all_const_meta:
         header = name_to_header[const_meta.example_member]
         names_and_vals = clean_headers_to_constants[header]
         yield from _produce_one_enum(const_meta, names_and_vals)
 
 
-
-
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     for s in produce_constants():
         print(s)
-

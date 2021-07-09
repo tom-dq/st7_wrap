@@ -13,17 +13,17 @@ _BASE_EXCEPTION_NAME = "St7BaseException"
 def __make_base_exception() -> typing.Iterable[str]:
     yield f"class {_BASE_EXCEPTION_NAME}(BaseException):"
     yield '    """Base class for all ERR7_ and SE_ errors"""'
-    yield '    pass' 
-    yield ''
-    yield ''
+    yield "    pass"
+    yield ""
+    yield ""
 
 
 def __make_fallback_exception() -> typing.Iterable[str]:
     yield f"class St7UnknownException({_BASE_EXCEPTION_NAME}):"
     yield '    """Unknown St7 Error"""'
-    yield '    pass' 
-    yield ''
-    yield ''
+    yield "    pass"
+    yield ""
+    yield ""
 
 
 def __make_one_exception(error_name: str) -> typing.Iterable[str]:
@@ -34,7 +34,7 @@ def __make_one_exception(error_name: str) -> typing.Iterable[str]:
 
     def get_description() -> str:
         sb = ctypes.create_string_buffer(St7API.kMaxStrLen)
-        
+
         # Try API error code first
         api_iErr = St7API.St7GetAPIErrorString(iErr, sb, St7API.kMaxStrLen)
         if api_iErr == 0:
@@ -48,7 +48,6 @@ def __make_one_exception(error_name: str) -> typing.Iterable[str]:
         # Fallback - shouldn't happen!
         return f"Unknown Strand7 error {error_name} ({iErr})"
 
-
     yield f"class {error_name}({_BASE_EXCEPTION_NAME}):"
 
     description_text = get_description()
@@ -58,18 +57,18 @@ def __make_one_exception(error_name: str) -> typing.Iterable[str]:
     else:
         yield '    """'
         for desc_line in textwrap.wrap(description_text, width=100):
-            yield f'    {desc_line}'
+            yield f"    {desc_line}"
         yield '    """'
 
-    yield '    pass'
-    yield ''
-    yield ''
+    yield "    pass"
+    yield ""
+    yield ""
 
 
 def __make_all_exceptions() -> typing.Iterable[str]:
     yield from __make_base_exception()
 
-    error_names = [err for err in dir(St7API) if err.startswith('ERR7_') or err.startswith('SE_')]
+    error_names = [err for err in dir(St7API) if err.startswith("ERR7_") or err.startswith("SE_")]
 
     # Sort alphabetically for the exception classes
     error_names.sort()
@@ -117,6 +116,3 @@ def __make_module() -> typing.Iterable[str]:
 if __name__ == "__main__":
     for line in __make_module():
         print(line)
-
-    
-    

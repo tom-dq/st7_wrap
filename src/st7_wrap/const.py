@@ -2,6 +2,7 @@
 
 import enum
 
+
 import St7API
 
 
@@ -26,6 +27,7 @@ __all__ = [
     "ImageType",
     "ScaleType",
 ]
+
 
 class Entity(enum.Enum):
     tyNODE = St7API.tyNODE

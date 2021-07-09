@@ -5,7 +5,7 @@ An opinionated wrapper around the Strand7 / Straus7 API.
 
 ## Background
 
-Over the years I've used the Strand7 API on a number of projects, and sometimes the first step was building a quick-and-dirty wrapper. By publishing this as a package I won't need to make a similar one next time a project comes along. If you too can make use of it, all the better.
+Over the years I've used the Strand7 API on a number of projects, and sometimes the first step was building a quick-and-dirty wrapper, and now I hope I won't need to make a similar one next time a project comes along. If you can make use of it, all the better.
 
 This is very far from feature complete - I wouldn't recommend depending on this for long-lived or production work.
 

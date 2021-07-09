@@ -12,7 +12,7 @@ import logging
 
 try:
     import numpy
-    
+
 except ImportError:
     logging.warn("Couldn't import numpy - some bits and pieces may not work.")
     numpy = None
@@ -53,7 +53,6 @@ class DoF(enum.Enum):
         return "Force" if self.is_displacement else "Moment"
 
 
-
 @dataclasses.dataclass
 class NodeRestraint:
     node_num: int
@@ -65,18 +64,19 @@ class NodeRestraint:
     def global_xyz(self) -> bool:
         return self.ucs_id in {0, 1}
 
-_T_ctypes_type = typing.Union[typing.Type[ctypes.c_long], typing.Type[ctypes.c_double]]
 
+_T_ctypes_type = typing.Union[typing.Type[ctypes.c_long], typing.Type[ctypes.c_double]]
 
 
 class _InternalSubArrayDefinition(typing.NamedTuple):
     """Represents, for example, the "Integers" argument of St7SetEntityContourSettingsLimits -
-    how many values there are in there, what type they are, etc. """
+    how many values there are in there, what type they are, etc."""
+
     elem_type: _T_ctypes_type  # e.g., ctypes.c_long, ctypes.c_double  (not an instance like ctypes.c_long(34)... )
     fields: typing.List[dataclasses.Field]
     array_name_override: str
 
-    @property 
+    @property
     def array_name(self) -> str:
         if self.array_name_override:
             return self.array_name_override
@@ -140,7 +140,6 @@ class _St7ArrayBase:
 
     @classmethod
     def get_sub_arrays(cls) -> typing.Iterable[_InternalSubArrayDefinition]:
-        
         def sub_array_key(field: dataclasses.Field):
 
             if field.type in {int, bool}:
@@ -152,8 +151,8 @@ class _St7ArrayBase:
             else:
                 raise ValueError(field)
 
-            array_name_override = field.metadata.get(_ARRAY_NAME, '')
-            
+            array_name_override = field.metadata.get(_ARRAY_NAME, "")
+
             return c_type, array_name_override
 
         # Collect the sub-array keys
@@ -163,8 +162,9 @@ class _St7ArrayBase:
             sub_array_list[sub_array_key(field)].append(field)
 
         for (c_type, array_name_override), fields in sub_array_list.items():
-            yield _InternalSubArrayDefinition(elem_type=c_type, fields=fields, array_name_override=array_name_override)
-
+            yield _InternalSubArrayDefinition(
+                elem_type=c_type, fields=fields, array_name_override=array_name_override
+            )
 
     def get_sub_array_instances(self) -> typing.Iterable[_InternalSubArrayInstance]:
         instance_values = dataclasses.asdict(self)
@@ -175,33 +175,49 @@ class _St7ArrayBase:
                 key = field.name
                 this_subarray_instance_values[key] = instance_values.pop(key)
 
-            yield _InternalSubArrayInstance(array_def=sub_array_def, values=this_subarray_instance_values)
+            yield _InternalSubArrayInstance(
+                array_def=sub_array_def, values=this_subarray_instance_values
+            )
 
         if instance_values:
             raise ValueError(f"did not find a sub-array for the following: {instance_values}")
 
     @classmethod
-    def get_single_sub_array_of_type(cls, target_type: _T_ctypes_type) -> _InternalSubArrayDefinition:
+    def get_single_sub_array_of_type(
+        cls, target_type: _T_ctypes_type
+    ) -> _InternalSubArrayDefinition:
 
-        all_matches = [sub_array for sub_array in cls.get_sub_arrays() if sub_array.elem_type == target_type]
-
-        if len(all_matches) == 1:
-            return all_matches.pop()
-
-        raise ValueError(f"Expected one array of type {target_type} - got {len(all_matches)}: {all_matches}")
-
-
-    def get_single_sub_array_instance_of_type(self, target_type: _T_ctypes_type) -> _InternalSubArrayInstance:
-        all_matches = [sub_array_inst for sub_array_inst in self.get_sub_array_instances() if sub_array_inst.array_def.elem_type == target_type]
+        all_matches = [
+            sub_array for sub_array in cls.get_sub_arrays() if sub_array.elem_type == target_type
+        ]
 
         if len(all_matches) == 1:
             return all_matches.pop()
 
-        raise ValueError(f"Expected one array instance of type {target_type} - got {len(all_matches)}: {all_matches}")
+        raise ValueError(
+            f"Expected one array of type {target_type} - got {len(all_matches)}: {all_matches}"
+        )
 
+    def get_single_sub_array_instance_of_type(
+        self, target_type: _T_ctypes_type
+    ) -> _InternalSubArrayInstance:
+        all_matches = [
+            sub_array_inst
+            for sub_array_inst in self.get_sub_array_instances()
+            if sub_array_inst.array_def.elem_type == target_type
+        ]
+
+        if len(all_matches) == 1:
+            return all_matches.pop()
+
+        raise ValueError(
+            f"Expected one array instance of type {target_type} - got {len(all_matches)}: {all_matches}"
+        )
 
     @classmethod
-    def instance_from_sub_array_instances(cls, *sub_array_instances: _InternalSubArrayInstance) -> "_St7ArrayBase":
+    def instance_from_sub_array_instances(
+        cls, *sub_array_instances: _InternalSubArrayInstance
+    ) -> "_St7ArrayBase":
         working_dict = {}
         for sub_array_instance in sub_array_instances:
             working_dict.update(sub_array_instance.values)
@@ -214,13 +230,14 @@ class _St7ArrayBase:
 
         for field in dataclasses.fields(cls):
             idx = getattr(St7API, field.name)
-            working_dict[field.name] = field.type(ints_or_floats[idx])  # Convert to int 
+            working_dict[field.name] = field.type(ints_or_floats[idx])  # Convert to int
 
         return cls(**working_dict)
 
-
     def to_st7_array(self) -> ctypes.Array:
-        name_to_idx = {field.name: getattr(St7API, field.name) for field in dataclasses.fields(self)}
+        name_to_idx = {
+            field.name: getattr(St7API, field.name) for field in dataclasses.fields(self)
+        }
 
         array = self.make_empty_array()
 
@@ -248,10 +265,6 @@ class _St7ArrayBase:
 
         else:
             raise ValueError(all_types)
-
-
-
-
 
 
 @dataclasses.dataclass
@@ -294,6 +307,8 @@ class PlateIsotropicMaterial(_St7ArrayBase):
     ipPlateIsoSpecificHeat: float
 
 
+T_XYZ = typing.Sequence[float, float, float]
+
 class Vector3(typing.NamedTuple):
     x: float
     y: float
@@ -309,11 +324,12 @@ class Vector3(typing.NamedTuple):
                 return self
 
             else:
-                raise ValueError("Can only add to a zero int, and I probably shouldn't even be doing that.")
+                raise ValueError(
+                    "Can only add to a zero int, and I probably shouldn't even be doing that."
+                )
 
         else:
             raise TypeError(other)
-
 
     def __add__(self, other):
         if not isinstance(other, Vector3):
@@ -346,7 +362,7 @@ class Vector3(typing.NamedTuple):
         )
 
     def __abs__(self):
-        return (self.x**2 + self.y**2 + self.z**2)**0.5
+        return (self.x ** 2 + self.y ** 2 + self.z ** 2) ** 0.5
 
 
 class StrainTensor(typing.NamedTuple):
@@ -367,11 +383,12 @@ class StrainTensor(typing.NamedTuple):
                 return self
 
             else:
-                raise ValueError("Can only add to a zero int, and I probably shouldn't even be doing that.")
+                raise ValueError(
+                    "Can only add to a zero int, and I probably shouldn't even be doing that."
+                )
 
         else:
             raise TypeError(other)
-
 
     def __add__(self, other):
         if not isinstance(other, StrainTensor):
@@ -418,11 +435,13 @@ class StrainTensor(typing.NamedTuple):
         return max(w)
 
     def as_np_array(self) -> numpy.array:
-        return numpy.array([
-            [self.xx, 0.5*self.xy, 0.5*self.zx],
-            [0.5*self.xy, self.yy, 0.5*self.yz],
-            [0.5*self.zx, 0.5*self.yz, self.zz],
-        ])
+        return numpy.array(
+            [
+                [self.xx, 0.5 * self.xy, 0.5 * self.zx],
+                [0.5 * self.xy, self.yy, 0.5 * self.yz],
+                [0.5 * self.zx, 0.5 * self.yz, self.zz],
+            ]
+        )
 
 
 class CanvasSize(typing.NamedTuple):
@@ -434,7 +453,6 @@ class ResultOutput(typing.NamedTuple):
     num_points: int
     num_cols: int
     results: typing.Tuple[float]
-
 
 
 class AttributeSequenceEntry(typing.NamedTuple):
@@ -449,7 +467,7 @@ class St7Model:
     _temp_dir: str = None
     uID: int = 1
 
-    def __init__(self, fn_st7: T_Path, temp_dir=None):
+    def __init__(self, fn_st7: T_Path, create_new_model: bool, temp_dir=None):
         self._fn = str(fn_st7)
 
         if temp_dir:
@@ -458,7 +476,12 @@ class St7Model:
             self._temp_dir = tempfile.gettempdir()
 
         chk(St7API.St7Init())
-        chk(St7API.St7OpenFile(self.uID, self._fn.encode(), self._temp_dir.encode()))
+
+        if create_new_model:
+            chk(St7API.St7NewFile(self.uID, self._fn.encode(), self._temp_dir.encode()))
+
+        else:
+            chk(St7API.St7OpenFile(self.uID, self._fn.encode(), self._temp_dir.encode()))
 
     def __enter__(self):
         return self
@@ -476,9 +499,11 @@ class St7Model:
     def entity_numbers(self, entity: const.Entity) -> range:
         ct_max_num = ctypes.c_long()
         chk(St7API.St7GetTotal(self.uID, entity.value, ct_max_num))
-        return range(1, ct_max_num.value+1)
+        return range(1, ct_max_num.value + 1)
 
-    def property_numbers(self, entity: typing.Union[const.Property, const.Entity]) -> typing.Iterable[int]:
+    def property_numbers(
+        self, entity: typing.Union[const.Property, const.Entity]
+    ) -> typing.Iterable[int]:
         ct_arr = ctypes.c_long * 10
         num_props, last_prop = ct_arr(), ct_arr()
         chk(St7API.St7GetTotalProperties(self.uID, num_props, last_prop))
@@ -498,7 +523,7 @@ class St7Model:
         else:
             raise ValueError(entity)
 
-        for prop_idx in range(1, final_prop+1):
+        for prop_idx in range(1, final_prop + 1):
             prop_num = ctypes.c_long()
             chk(St7API.St7GetPropertyNumByIndex(self.uID, entity.value, prop_idx, prop_num))
             yield prop_num.value
@@ -522,78 +547,67 @@ class St7Model:
     def freedom_case_numbers(self) -> range:
         return range(1, self.St7GetNumFreedomCase() + 1)
 
-
-
-    def St7SetPlatePreLoad3(self, iPlate: int, iLoadCase: int, load_type: const.PreLoadType, load: Vector3):
+    def St7SetPlatePreLoad3(
+        self, iPlate: int, iLoadCase: int, load_type: const.PreLoadType, load: Vector3
+    ):
         doubles = (ctypes.c_double * 3)(*load)
-        chk(St7API.St7SetPlatePreLoad3(
-            self.uID,
-            iPlate,
-            iLoadCase,
-            load_type.value,
-            doubles
-        ))
+        chk(St7API.St7SetPlatePreLoad3(self.uID, iPlate, iLoadCase, load_type.value, doubles))
 
     def St7RunSolver(self, solver: const.SolverType, solver_mode: const.SolverMode, wait: bool):
-        chk(St7API.St7RunSolver(
-            self.uID,
-            solver.value,
-            solver_mode.value,
-            wait
-        ))
+        chk(St7API.St7RunSolver(self.uID, solver.value, solver_mode.value, wait))
 
     def St7EnableNLALoadCase(self, stage: int, load_case_num: int):
-        chk(St7API.St7EnableNLALoadCase(
-            self.uID,
-            stage,
-            load_case_num,
-        ))
+        chk(
+            St7API.St7EnableNLALoadCase(
+                self.uID,
+                stage,
+                load_case_num,
+            )
+        )
 
     def St7DisableNLALoadCase(self, stage: int, load_case_num: int):
-        chk(St7API.St7DisableNLALoadCase(
-            self.uID,
-            stage,
-            load_case_num,
-        ))
+        chk(
+            St7API.St7DisableNLALoadCase(
+                self.uID,
+                stage,
+                load_case_num,
+            )
+        )
 
     def St7EnableNLAFreedomCase(self, stage: int, freedom_case_num: int):
-        chk(St7API.St7EnableNLAFreedomCase(
-            self.uID,
-            stage,
-            freedom_case_num,
-        ))
+        chk(
+            St7API.St7EnableNLAFreedomCase(
+                self.uID,
+                stage,
+                freedom_case_num,
+            )
+        )
 
     def St7DisableNLAFreedomCase(self, stage: int, freedom_case_num: int):
-        chk(St7API.St7DisableNLAFreedomCase(
-            self.uID,
-            stage,
-            freedom_case_num,
-        ))
+        chk(
+            St7API.St7DisableNLAFreedomCase(
+                self.uID,
+                stage,
+                freedom_case_num,
+            )
+        )
 
     def St7AddNLAIncrement(self, stage: int, inc_name: str):
-        chk(St7API.St7AddNLAIncrement(
-            self.uID,
-            stage,
-            inc_name.encode()
-        ))
+        chk(St7API.St7AddNLAIncrement(self.uID, stage, inc_name.encode()))
 
-    def St7SetNLALoadIncrementFactor(self, stage: int, increment: int, load_case_num: int, factor: float):
-        chk(St7API.St7SetNLALoadIncrementFactor(
-            self.uID,
-            stage,
-            increment,
-            load_case_num,
-            factor
-        ))
+    def St7SetNLALoadIncrementFactor(
+        self, stage: int, increment: int, load_case_num: int, factor: float
+    ):
+        chk(St7API.St7SetNLALoadIncrementFactor(self.uID, stage, increment, load_case_num, factor))
 
-    def St7SetNLAFreedomIncrementFactor(self, stage: int, increment: int, freedom_case_num: int, factor: float):
-        chk(St7API.St7SetNLAFreedomIncrementFactor(
-            self.uID,
-            stage,
-            increment,
-            freedom_case_num,
-            factor
-        ))
+    def St7SetNLAFreedomIncrementFactor(
+        self, stage: int, increment: int, freedom_case_num: int, factor: float
+    ):
+        chk(
+            St7API.St7SetNLAFreedomIncrementFactor(
+                self.uID, stage, increment, freedom_case_num, factor
+            )
+        )
 
     def St7GetNumNLAIncrements(self, stage: int) -> int:
         ct_incs = ctypes.c_long()
@@ -607,30 +621,26 @@ class St7Model:
         chk(St7API.St7EnableSaveLastRestartStep(self.uID))
 
     def St7SetNLAInitial(self, fn_res: T_Path, case_num: int):
-        chk(St7API.St7SetNLAInitial(
-            self.uID,
-            str(fn_res).encode(),
-            case_num
-        ))
+        chk(St7API.St7SetNLAInitial(self.uID, str(fn_res).encode(), case_num))
 
     def St7SetQSAInitial(self, fn_res: T_Path, case_num: int):
-        chk(St7API.St7SetQSAInitial(
-            self.uID,
-            str(fn_res).encode(),
-            case_num
-        ))
+        chk(St7API.St7SetQSAInitial(self.uID, str(fn_res).encode(), case_num))
 
     def St7SetResultFileName(self, fn_res: T_Path):
-        chk(St7API.St7SetResultFileName(
-            self.uID,
-            str(fn_res).encode(),
-        ))
+        chk(
+            St7API.St7SetResultFileName(
+                self.uID,
+                str(fn_res).encode(),
+            )
+        )
 
     def St7SetStaticRestartFile(self, fn_restart: T_Path):
-        chk(St7API.St7SetStaticRestartFile(
-            self.uID,
-            str(fn_restart).encode(),
-        ))
+        chk(
+            St7API.St7SetStaticRestartFile(
+                self.uID,
+                str(fn_restart).encode(),
+            )
+        )
 
     def St7EnableTransientLoadCase(self, case_num: int):
         chk(St7API.St7EnableTransientLoadCase(self.uID, case_num))
@@ -656,7 +666,9 @@ class St7Model:
     def St7SaveFileCopy(self, fn_st7: str):
         chk(St7API.St7SaveFileCopy(self.uID, str(fn_st7).encode()))
 
-    def St7GetElementCentroid(self, entity: const.Entity, elem_num: int, face_edge_num: int) -> Vector3:
+    def St7GetElementCentroid(
+        self, entity: const.Entity, elem_num: int, face_edge_num: int
+    ) -> Vector3:
         ct_xyz = (ctypes.c_double * 3)()
         chk(St7API.St7GetElementCentroid(self.uID, entity.value, elem_num, face_edge_num, ct_xyz))
         return Vector3(*ct_xyz)
@@ -671,15 +683,28 @@ class St7Model:
         chk(St7API.St7GetNodeXYZ(self.uID, node_num, ct_xyz))
         return Vector3(*ct_xyz)
 
-    def St7SetNodeXYZ(self, node_num: int, xyz: Vector3):
+    def St7SetNodeXYZ(self, node_num: int, xyz: typing.Union[T_XYZ, Vector3]):
         ct_xyz = (ctypes.c_double * 3)(*xyz)
         chk(St7API.St7SetNodeXYZ(self.uID, node_num, ct_xyz))
 
-    def St7GetElementConnection(self, entity: const.Entity, elem_num: int) -> typing.Tuple[int, ...]:
+    def St7GetElementConnection(
+        self, entity: const.Entity, elem_num: int
+    ) -> typing.Tuple[int, ...]:
         ct_conn = (ctypes.c_long * 30)()
         chk(St7API.St7GetElementConnection(self.uID, entity.value, elem_num, ct_conn))
         n = ct_conn[0]
-        return tuple(ct_conn[1: 1+n])
+        return tuple(ct_conn[1 : 1 + n])
+
+    def St7SetElementConnection(
+        self, entity: const.Entity, elem_num: int, prop_num: int, connection: typing.Tuple[int, ...]
+        ):
+        if len(connection) > 30:
+            raise IndexError("What kind of element is that?")
+
+        ct_conn = (ctypes.c_long * (len(connection) + 10))()
+        ct_conn[0] = len(connection)
+        ct_conn[1: len(connection)+1] = connection
+        chk(St7API.St7SetElementConnection(self.uID, entity.value, elem_num, prop_num, ct_conn))
 
     def St7CreateModelWindow(self, dont_really_make: bool) -> "St7ModelWindow":
         if dont_really_make:
@@ -692,36 +717,57 @@ class St7Model:
         ct_int = ctypes.c_long(use_dll)
         chk(St7API.St7SetUseSolverDLL(ct_int))
 
-
     def St7SetNumTimeStepRows(self, num_rows: int):
         chk(St7API.St7SetNumTimeStepRows(self.uID, num_rows))
 
     def St7SetTimeStepData(self, row: int, num_steps: int, save_every: int, time_step: float):
         chk(St7API.St7SetTimeStepData(self.uID, row, num_steps, save_every, time_step))
 
-    def St7SetSolverDefaultsLogical(self, solver_def_logical: const.SolverDefaultLogical, value: bool):
+    def St7SetSolverDefaultsLogical(
+        self, solver_def_logical: const.SolverDefaultLogical, value: bool
+    ):
         chk(St7API.St7SetSolverDefaultsLogical(self.uID, solver_def_logical.value, value))
 
     def St7SetSolverDefaultsInteger(self, solver_def_int: const.SolverDefaultInteger, value: int):
         chk(St7API.St7SetSolverDefaultsInteger(self.uID, solver_def_int.value, value))
 
-
     def _make_table_data_and_validate(self, num_entries: int, doubles: typing.Sequence[float]):
         data = list(doubles)
-        if len(data) != num_entries*2:
+        if len(data) != num_entries * 2:
             raise ValueError("Mismatch!")
 
-        ct_doubles_type = (ctypes.c_double * (2 * num_entries))
+        ct_doubles_type = ctypes.c_double * (2 * num_entries)
         ct_doubles = ct_doubles_type(*data)
         return ct_doubles
 
-    def St7NewTableType(self, table_type: const.TableType, table_id: int, num_entries: int, table_name: str, doubles: typing.Sequence[float]):
+    def St7NewTableType(
+        self,
+        table_type: const.TableType,
+        table_id: int,
+        num_entries: int,
+        table_name: str,
+        doubles: typing.Sequence[float],
+    ):
         ct_doubles = self._make_table_data_and_validate(num_entries, doubles)
-        chk(St7API.St7NewTableType(self.uID, table_type.value, table_id, num_entries, table_name.encode(), ct_doubles))
+        chk(
+            St7API.St7NewTableType(
+                self.uID, table_type.value, table_id, num_entries, table_name.encode(), ct_doubles
+            )
+        )
 
-    def St7SetTableTypeData(self, table_type: const.TableType, table_id: int, num_entries: int, doubles: typing.Sequence[float]):
+    def St7SetTableTypeData(
+        self,
+        table_type: const.TableType,
+        table_id: int,
+        num_entries: int,
+        doubles: typing.Sequence[float],
+    ):
         ct_doubles = self._make_table_data_and_validate(num_entries, doubles)
-        chk(St7API.St7SetTableTypeData(self.uID, table_type.value, table_id, num_entries, ct_doubles))
+        chk(
+            St7API.St7SetTableTypeData(
+                self.uID, table_type.value, table_id, num_entries, ct_doubles
+            )
+        )
 
     def St7SetPlateXAngle1(self, plate_num: int, ang_deg: float):
         ct_doubles = (ctypes.c_double * 10)()
@@ -744,26 +790,40 @@ class St7Model:
         doubles_instance = doubles.instance_from_st7_array(doubles_arr)
         return PlateIsotropicMaterial.instance_from_sub_array_instances(doubles_instance)
 
-    def St7SetPlateIsotropicMaterial(self, prop_num: int, plate_isotropic_material: PlateIsotropicMaterial):
-        doubles_arr = plate_isotropic_material.get_single_sub_array_instance_of_type(ctypes.c_double).to_st7_array()
+    def St7SetPlateIsotropicMaterial(
+        self, prop_num: int, plate_isotropic_material: PlateIsotropicMaterial
+    ):
+        doubles_arr = plate_isotropic_material.get_single_sub_array_instance_of_type(
+            ctypes.c_double
+        ).to_st7_array()
         chk(St7API.St7SetPlateIsotropicMaterial(self.uID, prop_num, doubles_arr))
 
-    def St7GetEntityAttributeSequence(self, entity: const.Entity, entity_num: int, attribute_type: const.AttributeType) -> typing.Iterable[AttributeSequenceEntry]:
+    def St7GetEntityAttributeSequence(
+        self, entity: const.Entity, entity_num: int, attribute_type: const.AttributeType
+    ) -> typing.Iterable[AttributeSequenceEntry]:
 
         num_sets = ctypes.c_long()
-        chk(St7API.St7GetEntityAttributeSequenceCount(self.uID, entity.value, entity_num, attribute_type.value, num_sets))
+        chk(
+            St7API.St7GetEntityAttributeSequenceCount(
+                self.uID, entity.value, entity_num, attribute_type.value, num_sets
+            )
+        )
 
         arr_size = 4 * (num_sets.value + 10)
         ct_arr = (ctypes.c_long * arr_size)()
 
-        chk(St7API.St7GetEntityAttributeSequence(self.uID, entity.value, entity_num, attribute_type.value, num_sets, ct_arr))
+        chk(
+            St7API.St7GetEntityAttributeSequence(
+                self.uID, entity.value, entity_num, attribute_type.value, num_sets, ct_arr
+            )
+        )
 
         for i in range(num_sets.value):
             yield AttributeSequenceEntry(
-                ipAttrLocal=ct_arr[4*i + St7API.ipAttrLocal],
-                ipAttrAxis=ct_arr[4*i + St7API.ipAttrAxis],
-                ipAttrCase=ct_arr[4*i + St7API.ipAttrCase],
-                ipAttrID=ct_arr[4*i + St7API.ipAttrID],
+                ipAttrLocal=ct_arr[4 * i + St7API.ipAttrLocal],
+                ipAttrAxis=ct_arr[4 * i + St7API.ipAttrAxis],
+                ipAttrCase=ct_arr[4 * i + St7API.ipAttrCase],
+                ipAttrID=ct_arr[4 * i + St7API.ipAttrID],
             )
 
     def St7GetNodeRestraint6(self, node_num: int, fc_num: int) -> NodeRestraint:
@@ -773,9 +833,7 @@ class St7Model:
 
         chk(St7API.St7GetNodeRestraint6(self.uID, node_num, fc_num, ucs_id, ct_status, ct_doubles))
 
-        restraint_dict = {
-            DoF(idx): ct_doubles[idx] for idx in range(6) if ct_status[idx]
-        }
+        restraint_dict = {DoF(idx): ct_doubles[idx] for idx in range(6) if ct_status[idx]}
 
         return NodeRestraint(
             node_num=node_num,
@@ -786,8 +844,26 @@ class St7Model:
 
     def all_node_restraints(self) -> typing.Iterable[NodeRestraint]:
         for node_num in self.entity_numbers(const.Entity.tyNODE):
-            for attr_seq_entry in self.St7GetEntityAttributeSequence(const.Entity.tyNODE, node_num, const.AttributeType.aoRestraint):
+            for attr_seq_entry in self.St7GetEntityAttributeSequence(
+                const.Entity.tyNODE, node_num, const.AttributeType.aoRestraint
+            ):
                 yield self.St7GetNodeRestraint6(node_num, attr_seq_entry.ipAttrCase)
+
+
+class St7NewModel(St7Model):
+    def __init__(self, fn_st7: T_Path, temp_dir=None):
+        create_new_model = True
+
+        super().__init__(fn_st7, create_new_model, temp_dir)
+        
+
+class St7ExistingModel(St7Model):
+    def __init__(self, fn_st7: T_Path, temp_dir=None):
+        create_new_model = False
+
+        super().__init__(fn_st7, create_new_model, temp_dir)
+        
+
 
 
 class St7Results:
@@ -803,9 +879,13 @@ class St7Results:
         self.uID = self.model.uID
 
         ct_num_prim, ct_num_sec = ctypes.c_long(), ctypes.c_long()
-        chk(St7API.St7OpenResultFile(self.uID, self.fn_res.encode(), b'', False, ct_num_prim, ct_num_sec))
+        chk(
+            St7API.St7OpenResultFile(
+                self.uID, self.fn_res.encode(), b"", False, ct_num_prim, ct_num_sec
+            )
+        )
 
-        self.primary_cases = range(1, ct_num_prim.value+1)
+        self.primary_cases = range(1, ct_num_prim.value + 1)
 
     def __enter__(self):
         return self
@@ -817,19 +897,14 @@ class St7Results:
         chk(St7API.St7CloseResultFile(self.uID))
 
     def St7GetNodeResult(
-            self,
-            res_type: const.NodeResultType,
-            node_num: int,
-            res_case: int,
+        self,
+        res_type: const.NodeResultType,
+        node_num: int,
+        res_case: int,
     ) -> ResultOutput:
         ct_res_array = (ctypes.c_double * 6)()
 
-        chk(St7API.St7GetNodeResult(
-            self.uID,
-            res_type.value,
-            node_num,
-            res_case,
-            ct_res_array))
+        chk(St7API.St7GetNodeResult(self.uID, res_type.value, node_num, res_case, ct_res_array))
 
         out_array = tuple(ct_res_array)
 
@@ -839,17 +914,16 @@ class St7Results:
             results=out_array,
         )
 
-
     def St7GetPlateResultArray(
-            self,
-            res_type: const.PlateResultType,
-            res_sub_type: typing.Union[const.PlateResultSubType, int],
-            plate_num: int,
-            case_num: int,
-            sample_location: const.SampleLocation,
-            surface:const.PlateSurface,
-            layer: int,
-            ) -> ResultOutput:
+        self,
+        res_type: const.PlateResultType,
+        res_sub_type: typing.Union[const.PlateResultSubType, int],
+        plate_num: int,
+        case_num: int,
+        sample_location: const.SampleLocation,
+        surface: const.PlateSurface,
+        layer: int,
+    ) -> ResultOutput:
 
         if isinstance(res_sub_type, const.PlateResultSubType):
             real_sub_type = res_sub_type.value
@@ -864,21 +938,23 @@ class St7Results:
         ct_num_points = ctypes.c_long()
         ct_num_cols = ctypes.c_long()
 
-        chk(St7API.St7GetPlateResultArray(
-            self.uID,
-            res_type.value,
-            real_sub_type,
-            plate_num,
-            case_num,
-            sample_location.value,
-            surface.value,
-            layer,
-            ct_num_points,
-            ct_num_cols,
-            ct_res_array
-        ))
+        chk(
+            St7API.St7GetPlateResultArray(
+                self.uID,
+                res_type.value,
+                real_sub_type,
+                plate_num,
+                case_num,
+                sample_location.value,
+                surface.value,
+                layer,
+                ct_num_points,
+                ct_num_cols,
+                ct_res_array,
+            )
+        )
 
-        out_array = tuple(ct_res_array[0:ct_num_points.value * ct_num_cols.value])
+        out_array = tuple(ct_res_array[0 : ct_num_points.value * ct_num_cols.value])
         return ResultOutput(
             num_points=ct_num_points.value,
             num_cols=ct_num_cols.value,
@@ -919,7 +995,11 @@ class St7ModelWindow:
     def St7PositionModelWindow(self, left: int, top: int, width: int, height: int):
         chk(St7API.St7PositionModelWindow(self.uID, left, top, width, height))
 
-    def St7SetEntityContourIndex(self, entity: const.Entity, index: typing.Union[const.BeamContour, const.PlateContour, const.BrickContour]):
+    def St7SetEntityContourIndex(
+        self,
+        entity: const.Entity,
+        index: typing.Union[const.BeamContour, const.PlateContour, const.BrickContour],
+    ):
         chk(St7API.St7SetEntityContourIndex(self.uID, entity.value, index.value))
 
     def St7ExportImage(self, fn: T_Path, image_type: const.ImageType, width: int, height: int):
@@ -931,8 +1011,8 @@ class St7ModelWindow:
         self.St7SetPlateResultDisplay(integers)
 
     def St7SetPlateResultDisplay(self, integers: typing.Tuple[int]):
-        ct_ints = (ctypes.c_long*20)()
-        ct_ints[:len(integers)] = integers[:]
+        ct_ints = (ctypes.c_long * 20)()
+        ct_ints[: len(integers)] = integers[:]
 
     def St7SetWindowResultCase(self, case_num: int):
         chk(St7API.St7SetWindowResultCase(self.uID, case_num))
@@ -952,11 +1032,13 @@ class St7ModelWindow:
         ints_instance = ints.instance_from_st7_array(ints_arr)
         return ContourSettingsStyle.instance_from_sub_array_instances(ints_instance)
 
-
-    def St7SetEntityContourSettingsStyle(self, entity: const.Entity, contour_settings_style: ContourSettingsStyle):
-        ints_arr = contour_settings_style.get_single_sub_array_instance_of_type(ctypes.c_long).to_st7_array()
+    def St7SetEntityContourSettingsStyle(
+        self, entity: const.Entity, contour_settings_style: ContourSettingsStyle
+    ):
+        ints_arr = contour_settings_style.get_single_sub_array_instance_of_type(
+            ctypes.c_long
+        ).to_st7_array()
         chk(St7API.St7SetEntityContourSettingsStyle(self.uID, entity.value, ints_arr))
-
 
     def St7GetEntityContourSettingsLimits(self, entity: const.Entity) -> ContourSettingsLimit:
         ints = ContourSettingsLimit.get_single_sub_array_of_type(ctypes.c_long)
@@ -970,30 +1052,38 @@ class St7ModelWindow:
         ints_instance = ints.instance_from_st7_array(ints_arr)
         doubles_instance = doubles.instance_from_st7_array(doubles_arr)
 
-        contour_settings_limit = ContourSettingsLimit.instance_from_sub_array_instances(ints_instance, doubles_instance)
+        contour_settings_limit = ContourSettingsLimit.instance_from_sub_array_instances(
+            ints_instance, doubles_instance
+        )
 
         return contour_settings_limit
 
+    def St7SetEntityContourSettingsLimits(
+        self, entity: const.Entity, contour_settings_limit: ContourSettingsLimit
+    ):
 
-    def St7SetEntityContourSettingsLimits(self, entity: const.Entity, contour_settings_limit: ContourSettingsLimit):
-        
-        ints_arr = contour_settings_limit.get_single_sub_array_instance_of_type(ctypes.c_long).to_st7_array()
-        doubles_arr = contour_settings_limit.get_single_sub_array_instance_of_type(ctypes.c_double).to_st7_array()
+        ints_arr = contour_settings_limit.get_single_sub_array_instance_of_type(
+            ctypes.c_long
+        ).to_st7_array()
+        doubles_arr = contour_settings_limit.get_single_sub_array_instance_of_type(
+            ctypes.c_double
+        ).to_st7_array()
 
         chk(St7API.St7SetEntityContourSettingsLimits(self.uID, entity.value, ints_arr, doubles_arr))
 
 
-
-
 def _DummyClassFactory(name, BaseClass):
     """Utility function to make a class with no-op methods for everything, but the same signature."""
+
     def make_no_op_function(func_returns_self: bool) -> typing.Callable:
         # Factory to make
         if func_returns_self:
+
             def f(self, *args, **kwargs):
                 return self
 
         else:
+
             def f(*args, **kwargs):
                 pass
 

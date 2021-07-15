@@ -307,6 +307,24 @@ class PlateIsotropicMaterial(_St7ArrayBase):
     ipPlateIsoSpecificHeat: float
 
 
+@dataclasses.dataclass
+class PlateResultDisplay(_St7ArrayBase):
+    ipResultType: int
+    ipResultQuantity: int
+    ipResultSystem: int
+    ipResultComponent: int
+    ipResultSurface: int
+    ipVectorStyle: int
+    ipReferenceNode: int
+    ipAbsoluteValue: int
+    ipVector1: int
+    ipVector2: int
+    ipVector3: int
+    ipVector4: int
+    ipVector5: int
+    ipVector6: int
+
+
 T_XYZ = typing.Sequence[float]
 
 
@@ -707,7 +725,7 @@ class St7Model:
         ct_conn[1 : len(connection) + 1] = connection
         chk(St7API.St7SetElementConnection(self.uID, entity.value, elem_num, prop_num, ct_conn))
 
-    def St7CreateModelWindow(self, dont_really_make: bool) -> "St7ModelWindow":
+    def St7CreateModelWindow(self, dont_really_make: bool=False) -> "St7ModelWindow":
         if dont_really_make:
             return St7ModelWindowDummy(model=self)
 
@@ -1005,13 +1023,14 @@ class St7ModelWindow:
         chk(St7API.St7ExportImage(self.uID, str(fn).encode(), image_type.value, width, height))
 
     def St7SetPlateResultDisplay_None(self):
-        integers = [0] * 15
-        integers[St7API.ipResultType] = St7API.rtAsNone
-        self.St7SetPlateResultDisplay(integers)
+        # TODO!
+        pass
 
-    def St7SetPlateResultDisplay(self, integers: typing.Tuple[int]):
-        ct_ints = (ctypes.c_long * 20)()
-        ct_ints[: len(integers)] = integers[:]
+
+    def St7SetPlateResultDisplay(self, plate_result_display: PlateResultDisplay):
+        ints_arr = plate_result_display.get_single_sub_array_instance_of_type(ctypes.c_long).to_st7_array()
+
+        chk(St7API.St7SetPlateResultDisplay(self.uID, ints_arr))
 
     def St7SetWindowResultCase(self, case_num: int):
         chk(St7API.St7SetWindowResultCase(self.uID, case_num))

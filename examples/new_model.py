@@ -10,6 +10,8 @@ with st7.St7NewModel(r"c:\temp\NewModel.st7") as st7_model:
     st7_model.St7SetNodeXYZ(3, [2.0, 3.0, 0.0])
 
     # Make a plate
-    st7_model.St7SetElementConnection(const.Entity.tyPLATE, elem_num=1, prop_num=1, connection=[1, 2, 3])
+    st7_model.St7SetElementConnection(
+        const.Entity.tyPLATE, elem_num=1, prop_num=1, connection=[1, 2, 3]
+    )
 
     st7_model.St7SaveFile()

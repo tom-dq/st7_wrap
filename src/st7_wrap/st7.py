@@ -309,6 +309,7 @@ class PlateIsotropicMaterial(_St7ArrayBase):
 
 T_XYZ = typing.Sequence[float]
 
+
 class Vector3(typing.NamedTuple):
     x: float
     y: float
@@ -697,13 +698,13 @@ class St7Model:
 
     def St7SetElementConnection(
         self, entity: const.Entity, elem_num: int, prop_num: int, connection: typing.Tuple[int, ...]
-        ):
+    ):
         if len(connection) > 30:
             raise IndexError("What kind of element is that?")
 
         ct_conn = (ctypes.c_long * (len(connection) + 10))()
         ct_conn[0] = len(connection)
-        ct_conn[1: len(connection)+1] = connection
+        ct_conn[1 : len(connection) + 1] = connection
         chk(St7API.St7SetElementConnection(self.uID, entity.value, elem_num, prop_num, ct_conn))
 
     def St7CreateModelWindow(self, dont_really_make: bool) -> "St7ModelWindow":
@@ -855,15 +856,13 @@ class St7NewModel(St7Model):
         create_new_model = True
 
         super().__init__(fn_st7, create_new_model, temp_dir)
-        
+
 
 class St7ExistingModel(St7Model):
     def __init__(self, fn_st7: T_Path, temp_dir=None):
         create_new_model = False
 
         super().__init__(fn_st7, create_new_model, temp_dir)
-        
-
 
 
 class St7Results:

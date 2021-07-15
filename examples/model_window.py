@@ -1,5 +1,6 @@
 import St7API
 
+from st7_wrap import arrays
 from st7_wrap import const
 from st7_wrap import st7
 
@@ -20,21 +21,12 @@ with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
 
             # Set the model window contour to vM stress
             PLATE_STRESS_COMBINED_VM_GUI_IDX = 4
-            plate_result_display = st7.PlateResultDisplay(
+            plate_result_display = arrays.PlateResultDisplay(
                 ipResultType=St7API.rtAsContour,
                 ipResultQuantity=St7API.rqPlateStressC,
                 ipResultSystem=St7API.stPlateCombined,
                 ipResultComponent=PLATE_STRESS_COMBINED_VM_GUI_IDX,
                 ipResultSurface=St7API.psPlateMidPlane,
-                ipVectorStyle=0,
-                ipReferenceNode=0,
-                ipAbsoluteValue=False,
-                ipVector1=0,
-                ipVector2=0,
-                ipVector3=0,
-                ipVector4=0,
-                ipVector5=0,
-                ipVector6=0,
             )
 
             model_window.St7SetPlateResultDisplay(plate_result_display)

@@ -100,7 +100,7 @@ Some non-zero return code from a Strand7 function.
 
 ### Change a plate property
 Python `dataclasses` are used for Strand7 arrays where you set things using `ip...` index
-position constants.
+position constants. These can be found in `st7_wrap.arrays`
 
 *This interface in particular is incomplete and might change in the future*
 
@@ -108,19 +108,23 @@ position constants.
 import dataclasses
 
 from st7_wrap import st7
+from st7_wrap import arrays
 
 PLATE_PROP_NUM = 1
 
 # This is a model with a plate property in it.
 with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
 
-    # Set the plate modulus to something specific
-    plate_iso_prop = st7_model.St7GetPlateIsotropicMaterial(PLATE_PROP_NUM)
-    new_plate_iso_prop = dataclasses.replace(plate_iso_prop, ipPlateIsoModulus=123456.789)
-    st7_model.St7SetPlateIsotropicMaterial(PLATE_PROP_NUM, new_plate_iso_prop)
+    # Set the plate modulus to something specific - any unset argument will be zero.
+    new_plate_prop = arrays.PlateIsotropicMaterial(ipPlateIsoModulus=200e3, ipPlateIsoPoisson=0.3)
+    st7_model.St7SetPlateIsotropicMaterial(PLATE_PROP_NUM, new_plate_prop)
+
+    # To change some values without overwriting the others with zero, get the existing values first
+    existing_plate_prop = st7_model.St7GetPlateIsotropicMaterial(PLATE_PROP_NUM)
+    updated_plate_prop = dataclasses.replace(existing_plate_prop, ipPlateIsoModulus=220e3)
+    st7_model.St7SetPlateIsotropicMaterial(PLATE_PROP_NUM, updated_plate_prop)
 
     st7_model.St7SaveFile()
-
 ```
 
 ### Running the solver and extracting results
@@ -193,6 +197,7 @@ Plate 5 vM Stress at Gauss Points: [5017.202557134458, 4347.615893517061, 5015.1
 ```python
 import St7API
 
+from st7_wrap import arrays
 from st7_wrap import const
 from st7_wrap import st7
 
@@ -213,21 +218,12 @@ with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
 
             # Set the model window contour to vM stress
             PLATE_STRESS_COMBINED_VM_GUI_IDX = 4
-            plate_result_display = st7.PlateResultDisplay(
+            plate_result_display = arrays.PlateResultDisplay(
                 ipResultType=St7API.rtAsContour,
                 ipResultQuantity=St7API.rqPlateStressC,
                 ipResultSystem=St7API.stPlateCombined,
                 ipResultComponent=PLATE_STRESS_COMBINED_VM_GUI_IDX,
                 ipResultSurface=St7API.psPlateMidPlane,
-                ipVectorStyle=0,
-                ipReferenceNode=0,
-                ipAbsoluteValue=False,
-                ipVector1=0,
-                ipVector2=0,
-                ipVector3=0,
-                ipVector4=0,
-                ipVector5=0,
-                ipVector6=0,
             )
 
             model_window.St7SetPlateResultDisplay(plate_result_display)
@@ -237,7 +233,6 @@ with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
             model_window.St7ExportImage(
                 r"c:\temp\St7Results.png", const.ImageType.itPNG, 1600, 1200
             )
-
 ```
 
 

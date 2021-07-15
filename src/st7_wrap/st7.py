@@ -20,11 +20,11 @@ except ImportError:
 import St7API
 
 from st7_wrap.exc import chk
+from st7_wrap import arrays
 from st7_wrap import const
 
-T_Path = typing.Union[pathlib.Path, str]
 
-_ARRAY_NAME = "array_name"
+T_Path = typing.Union[pathlib.Path, str]
 
 
 class DoF(enum.Enum):
@@ -63,266 +63,6 @@ class NodeRestraint:
     @property
     def global_xyz(self) -> bool:
         return self.ucs_id in {0, 1}
-
-
-_T_ctypes_type = typing.Union[typing.Type[ctypes.c_long], typing.Type[ctypes.c_double]]
-
-
-class _InternalSubArrayDefinition(typing.NamedTuple):
-    """Represents, for example, the "Integers" argument of St7SetEntityContourSettingsLimits -
-    how many values there are in there, what type they are, etc."""
-
-    elem_type: _T_ctypes_type  # e.g., ctypes.c_long, ctypes.c_double  (not an instance like ctypes.c_long(34)... )
-    fields: typing.List[dataclasses.Field]
-    array_name_override: str
-
-    @property
-    def array_name(self) -> str:
-        if self.array_name_override:
-            return self.array_name_override
-
-        lookups = {
-            ctypes.c_long: "Integers",
-            ctypes.c_double: "Doubles",
-        }
-
-        return lookups[self.elem_type]
-
-    @property
-    def array_length(self) -> int:
-        # Have a buffer on there in case...
-        return 10 + max(getattr(St7API, field.name) for field in self.fields)
-
-    def make_empty_array(self):
-        array = (self.elem_type * self.array_length)()
-        return array
-
-    def instance_from_st7_array(self, ints_or_floats) -> "_InternalSubArrayInstance":
-        values = {}
-
-        for field in self.fields:
-            idx = getattr(St7API, field.name)
-            values[field.name] = field.type(ints_or_floats[idx])  # Convert to int if it's a bool
-
-        return _InternalSubArrayInstance(array_def=self, values=values)
-
-
-class _InternalSubArrayInstance(typing.NamedTuple):
-    """Represents an instance of, say, the "Integers" argument of St7SetEntityContourSettingsLimits
-    populated with values"""
-
-    array_def: _InternalSubArrayDefinition
-    values: typing.Dict[str, typing.Union[bool, int, float]]
-
-    def to_st7_array(self):
-        working_array = self.array_def.make_empty_array()
-
-        for key, val in self.values.items():
-            idx = getattr(St7API, key)
-            working_array[idx] = val
-
-        return working_array
-
-
-@dataclasses.dataclass
-class _St7ArrayBase:
-    """All those arrays of integers, etc can inherit from this to get convenience conversion functions."""
-
-    # TODO - future plan for functions in which there are multiple arrays of the same type,
-    #   like "St7GetBeamPropertyData" with two Doubles arrays:
-    #   Support custom field creation like this
-    #   ipAREA : float = field(metadata={"array_name": "SectionData"})
-    #   ipModulus : float = field(metadata={"array_name": "MaterialData"})
-
-    # Also TODO: support stuff like connection arrays? Or things where there is no ipAAA constant?
-
-    # Another TODO - it would be good to be able to convert to and from enums where they appear in an integer array.
-
-    @classmethod
-    def get_sub_arrays(cls) -> typing.Iterable[_InternalSubArrayDefinition]:
-        def sub_array_key(field: dataclasses.Field):
-
-            if field.type in {int, bool}:
-                c_type = ctypes.c_long
-
-            elif field.type == float:
-                c_type = ctypes.c_double
-
-            else:
-                raise ValueError(field)
-
-            array_name_override = field.metadata.get(_ARRAY_NAME, "")
-
-            return c_type, array_name_override
-
-        # Collect the sub-array keys
-        sub_array_list = collections.defaultdict(list)
-
-        for field in dataclasses.fields(cls):
-            sub_array_list[sub_array_key(field)].append(field)
-
-        for (c_type, array_name_override), fields in sub_array_list.items():
-            yield _InternalSubArrayDefinition(
-                elem_type=c_type, fields=fields, array_name_override=array_name_override
-            )
-
-    def get_sub_array_instances(self) -> typing.Iterable[_InternalSubArrayInstance]:
-        instance_values = dataclasses.asdict(self)
-
-        for sub_array_def in self.get_sub_arrays():
-            this_subarray_instance_values = {}
-            for field in sub_array_def.fields:
-                key = field.name
-                this_subarray_instance_values[key] = instance_values.pop(key)
-
-            yield _InternalSubArrayInstance(
-                array_def=sub_array_def, values=this_subarray_instance_values
-            )
-
-        if instance_values:
-            raise ValueError(f"did not find a sub-array for the following: {instance_values}")
-
-    @classmethod
-    def get_single_sub_array_of_type(
-        cls, target_type: _T_ctypes_type
-    ) -> _InternalSubArrayDefinition:
-
-        all_matches = [
-            sub_array for sub_array in cls.get_sub_arrays() if sub_array.elem_type == target_type
-        ]
-
-        if len(all_matches) == 1:
-            return all_matches.pop()
-
-        raise ValueError(
-            f"Expected one array of type {target_type} - got {len(all_matches)}: {all_matches}"
-        )
-
-    def get_single_sub_array_instance_of_type(
-        self, target_type: _T_ctypes_type
-    ) -> _InternalSubArrayInstance:
-        all_matches = [
-            sub_array_inst
-            for sub_array_inst in self.get_sub_array_instances()
-            if sub_array_inst.array_def.elem_type == target_type
-        ]
-
-        if len(all_matches) == 1:
-            return all_matches.pop()
-
-        raise ValueError(
-            f"Expected one array instance of type {target_type} - got {len(all_matches)}: {all_matches}"
-        )
-
-    @classmethod
-    def instance_from_sub_array_instances(
-        cls, *sub_array_instances: _InternalSubArrayInstance
-    ) -> "_St7ArrayBase":
-        working_dict = {}
-        for sub_array_instance in sub_array_instances:
-            working_dict.update(sub_array_instance.values)
-
-        return cls(**working_dict)
-
-    @classmethod
-    def from_st7_array(cls, ints_or_floats):
-        working_dict = {}
-
-        for field in dataclasses.fields(cls):
-            idx = getattr(St7API, field.name)
-            working_dict[field.name] = field.type(ints_or_floats[idx])  # Convert to int
-
-        return cls(**working_dict)
-
-    def to_st7_array(self) -> ctypes.Array:
-        name_to_idx = {
-            field.name: getattr(St7API, field.name) for field in dataclasses.fields(self)
-        }
-
-        array = self.make_empty_array()
-
-        for field, value in dataclasses.asdict(self).items():
-            idx = name_to_idx[field]
-            array[idx] = value
-
-        return array
-
-    @classmethod
-    def get_array_length(cls) -> int:
-        # Have a buffer on there in case...
-        return 10 + max(getattr(St7API, field.name) for field in dataclasses.fields(cls))
-
-    @classmethod
-    def get_array_element_type(cls):
-        """Returns ctypes element type"""
-        all_types = {field.type for field in dataclasses.fields(cls)}
-
-        if all_types <= {int, bool}:
-            return ctypes.c_long
-
-        elif all_types == {float}:
-            return ctypes.c_double
-
-        else:
-            raise ValueError(all_types)
-
-
-@dataclasses.dataclass
-class ContourSettingsStyle(_St7ArrayBase):
-    ipContourStyle: int
-    ipReverse: bool
-    ipSeparator: bool
-    ipBand1Colour: int
-    ipBand2Colour: int
-    ipSeparatorColour: int
-    ipLineBackColour: int
-    ipMonoColour: int
-    ipMinColour: int
-    ipMaxColour: int
-    ipLimitMin: bool
-    ipLimitMax: bool
-
-
-@dataclasses.dataclass
-class ContourSettingsLimit(_St7ArrayBase):
-    ipContourLimit: int
-    ipContourMode: int
-    ipNumContours: int
-    ipSetMinLimit: bool
-    ipSetMaxLimit: bool
-
-    ipMinLimit: float
-    ipMaxLimit: float
-
-
-@dataclasses.dataclass
-class PlateIsotropicMaterial(_St7ArrayBase):
-    ipPlateIsoModulus: float
-    ipPlateIsoPoisson: float
-    ipPlateIsoDensity: float
-    ipPlateIsoAlpha: float
-    ipPlateIsoViscosity: float
-    ipPlateIsoDampingRatio: float
-    ipPlateIsoConductivity: float
-    ipPlateIsoSpecificHeat: float
-
-
-@dataclasses.dataclass
-class PlateResultDisplay(_St7ArrayBase):
-    ipResultType: int
-    ipResultQuantity: int
-    ipResultSystem: int
-    ipResultComponent: int
-    ipResultSurface: int
-    ipVectorStyle: int
-    ipReferenceNode: int
-    ipAbsoluteValue: int
-    ipVector1: int
-    ipVector2: int
-    ipVector3: int
-    ipVector4: int
-    ipVector5: int
-    ipVector6: int
 
 
 T_XYZ = typing.Sequence[float]
@@ -725,7 +465,7 @@ class St7Model:
         ct_conn[1 : len(connection) + 1] = connection
         chk(St7API.St7SetElementConnection(self.uID, entity.value, elem_num, prop_num, ct_conn))
 
-    def St7CreateModelWindow(self, dont_really_make: bool=False) -> "St7ModelWindow":
+    def St7CreateModelWindow(self, dont_really_make: bool = False) -> "St7ModelWindow":
         if dont_really_make:
             return St7ModelWindowDummy(model=self)
 
@@ -800,17 +540,17 @@ class St7Model:
         chk(St7API.St7GetPlateXAngle1(self.uID, plate_num, ct_doubles))
         return ct_doubles[0]
 
-    def St7GetPlateIsotropicMaterial(self, prop_num: int) -> PlateIsotropicMaterial:
-        doubles = PlateIsotropicMaterial.get_single_sub_array_of_type(ctypes.c_double)
+    def St7GetPlateIsotropicMaterial(self, prop_num: int) -> arrays.PlateIsotropicMaterial:
+        doubles = arrays.PlateIsotropicMaterial.get_single_sub_array_of_type(ctypes.c_double)
         doubles_arr = doubles.make_empty_array()
 
         chk(St7API.St7GetPlateIsotropicMaterial(self.uID, prop_num, doubles_arr))
 
         doubles_instance = doubles.instance_from_st7_array(doubles_arr)
-        return PlateIsotropicMaterial.instance_from_sub_array_instances(doubles_instance)
+        return arrays.PlateIsotropicMaterial.instance_from_sub_array_instances(doubles_instance)
 
     def St7SetPlateIsotropicMaterial(
-        self, prop_num: int, plate_isotropic_material: PlateIsotropicMaterial
+        self, prop_num: int, plate_isotropic_material: arrays.PlateIsotropicMaterial
     ):
         doubles_arr = plate_isotropic_material.get_single_sub_array_instance_of_type(
             ctypes.c_double
@@ -1026,9 +766,10 @@ class St7ModelWindow:
         # TODO!
         pass
 
-
-    def St7SetPlateResultDisplay(self, plate_result_display: PlateResultDisplay):
-        ints_arr = plate_result_display.get_single_sub_array_instance_of_type(ctypes.c_long).to_st7_array()
+    def St7SetPlateResultDisplay(self, plate_result_display: arrays.PlateResultDisplay):
+        ints_arr = plate_result_display.get_single_sub_array_instance_of_type(
+            ctypes.c_long
+        ).to_st7_array()
 
         chk(St7API.St7SetPlateResultDisplay(self.uID, ints_arr))
 
@@ -1041,26 +782,28 @@ class St7ModelWindow:
     def St7SetDisplacementScale(self, disp_scale: float, scale_type: const.ScaleType):
         chk(St7API.St7SetDisplacementScale(self.uID, disp_scale, scale_type.value))
 
-    def St7GetEntityContourSettingsStyle(self, entity: const.Entity) -> ContourSettingsStyle:
-        ints = ContourSettingsStyle.get_single_sub_array_of_type(ctypes.c_long)
+    def St7GetEntityContourSettingsStyle(self, entity: const.Entity) -> arrays.ContourSettingsStyle:
+        ints = arrays.ContourSettingsStyle.get_single_sub_array_of_type(ctypes.c_long)
         ints_arr = ints.make_empty_array()
 
         chk(St7API.St7GetEntityContourSettingsStyle(self.uID, entity.value, ints_arr))
 
         ints_instance = ints.instance_from_st7_array(ints_arr)
-        return ContourSettingsStyle.instance_from_sub_array_instances(ints_instance)
+        return arrays.ContourSettingsStyle.instance_from_sub_array_instances(ints_instance)
 
     def St7SetEntityContourSettingsStyle(
-        self, entity: const.Entity, contour_settings_style: ContourSettingsStyle
+        self, entity: const.Entity, contour_settings_style: arrays.ContourSettingsStyle
     ):
         ints_arr = contour_settings_style.get_single_sub_array_instance_of_type(
             ctypes.c_long
         ).to_st7_array()
         chk(St7API.St7SetEntityContourSettingsStyle(self.uID, entity.value, ints_arr))
 
-    def St7GetEntityContourSettingsLimits(self, entity: const.Entity) -> ContourSettingsLimit:
-        ints = ContourSettingsLimit.get_single_sub_array_of_type(ctypes.c_long)
-        doubles = ContourSettingsLimit.get_single_sub_array_of_type(ctypes.c_double)
+    def St7GetEntityContourSettingsLimits(
+        self, entity: const.Entity
+    ) -> arrays.ContourSettingsLimit:
+        ints = arrays.ContourSettingsLimit.get_single_sub_array_of_type(ctypes.c_long)
+        doubles = arrays.ContourSettingsLimit.get_single_sub_array_of_type(ctypes.c_double)
 
         ints_arr = ints.make_empty_array()
         doubles_arr = doubles.make_empty_array()
@@ -1070,14 +813,14 @@ class St7ModelWindow:
         ints_instance = ints.instance_from_st7_array(ints_arr)
         doubles_instance = doubles.instance_from_st7_array(doubles_arr)
 
-        contour_settings_limit = ContourSettingsLimit.instance_from_sub_array_instances(
+        contour_settings_limit = arrays.ContourSettingsLimit.instance_from_sub_array_instances(
             ints_instance, doubles_instance
         )
 
         return contour_settings_limit
 
     def St7SetEntityContourSettingsLimits(
-        self, entity: const.Entity, contour_settings_limit: ContourSettingsLimit
+        self, entity: const.Entity, contour_settings_limit: arrays.ContourSettingsLimit
     ):
 
         ints_arr = contour_settings_limit.get_single_sub_array_instance_of_type(

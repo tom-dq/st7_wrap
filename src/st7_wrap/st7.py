@@ -674,9 +674,9 @@ class St7Model:
         chk(St7API.St7GetElementCentroid(self.uID, entity.value, elem_num, face_edge_num, ct_xyz))
         return Vector3(*ct_xyz)
 
-    def St7GetElementData(self, entity: const.Entity, elem_num: int) -> float:
+    def St7GetElementData(self, entity: const.Entity, elem_num: int, res_case_num: int) -> float:
         ct_data = ctypes.c_double()
-        chk(St7API.St7GetElementData(self.uID, entity.value, elem_num, ct_data))
+        chk(St7API.St7GetElementData(self.uID, entity.value, elem_num, res_case_num, ct_data))
         return ct_data.value
 
     def St7GetNodeXYZ(self, node_num: int) -> Vector3:

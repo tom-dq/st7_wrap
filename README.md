@@ -100,7 +100,10 @@ Some non-zero return code from a Strand7 function.
 
 ### Change a plate property
 Python `dataclasses` are used for Strand7 arrays where you set things using `ip...` index
-position constants. These can be found in `st7_wrap.arrays`
+position constants. These can be found in `st7_wrap.arrays` and give some niceties like
+autocompletion.
+
+![Autocomplete in arrays](images/array_autocomplete.png)
 
 *This interface in particular is incomplete and might change in the future*
 

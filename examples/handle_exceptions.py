@@ -3,7 +3,7 @@ from st7_wrap import exc
 from st7_wrap import st7
 
 
-with st7.St7NewModel(r"c:\temp\Model.st7") as st7_model:
+with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
 
     # No error expected
     st7_model.St7SetNodeXYZ(1, [1.0, 1.0, 0.0])

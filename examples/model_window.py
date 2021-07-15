@@ -5,7 +5,7 @@ from st7_wrap import st7
 
 
 # This should be a model with plates in it which is ready to solve.
-with st7.St7ExistingModel(r"c:\temp\ExistingModel.st7") as st7_model:
+with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
 
     # Run the solver
     st7_model.St7RunSolver(

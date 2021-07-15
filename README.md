@@ -5,7 +5,7 @@ An opinionated wrapper around the Strand7 / Straus7 API.
 
 ## Background
 
-Over the years I've used the Strand7 API on a number of projects, and sometimes the first step was building a quick-and-dirty wrapper, and now I hope I won't need to make a similar one next time a project comes along. If you can make use of it, all the better.
+Over the years I've used the Strand7 API on a number of projects, and sometimes the first step was building a quick-and-dirty wrapper. Now I hope I won't need to make a similar one next time a project comes along, and if you can make use of it, all the better.
 
 
 ## Installation
@@ -39,7 +39,7 @@ from st7_wrap import st7
 
 
 # Context manager handles St7OpenFile or St7NewFile, then St7CloseFile at the end.
-with st7.St7NewModel(r"c:\temp\NewModel.st7") as st7_model:
+with st7.St7NewFile(r"c:\temp\NewModel.st7") as st7_model:
 
     # Make some nodes - Vector3 type has some conveniences, or just use a list or tuple.
     st7_model.St7SetNodeXYZ(1, st7.Vector3(1.0, 1.0, 0.0))
@@ -71,7 +71,7 @@ from st7_wrap import exc
 from st7_wrap import st7
 
 
-with st7.St7NewModel(r"c:\temp\Model.st7") as st7_model:
+with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
 
     # No error expected
     st7_model.St7SetNodeXYZ(1, [1.0, 1.0, 0.0])
@@ -112,7 +112,7 @@ from st7_wrap import st7
 PLATE_PROP_NUM = 1
 
 # This is a model with a plate property in it.
-with st7.St7ExistingModel(r"c:\temp\ExistingModel.st7") as st7_model:
+with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
 
     # Set the plate modulus to something specific
     plate_iso_prop = st7_model.St7GetPlateIsotropicMaterial(PLATE_PROP_NUM)
@@ -132,7 +132,7 @@ from st7_wrap import const
 from st7_wrap import st7
 
 # This should be a model with plates in it which is ready to solve.
-with st7.St7ExistingModel(r"c:\temp\ExistingModel.st7") as st7_model:
+with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
 
     # Run the solver
     st7_model.St7RunSolver(
@@ -198,7 +198,7 @@ from st7_wrap import st7
 
 
 # This should be a model with plates in it which is ready to solve.
-with st7.St7ExistingModel(r"c:\temp\ExistingModel.st7") as st7_model:
+with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
 
     # Run the solver
     st7_model.St7RunSolver(

@@ -869,14 +869,14 @@ class St7Model:
                 yield self.St7GetNodeRestraint6(node_num, attr_seq_entry.ipAttrCase)
 
 
-class St7NewModel(St7Model):
+class St7NewFile(St7Model):
     def __init__(self, fn_st7: T_Path, temp_dir=None):
         create_new_model = True
 
         super().__init__(fn_st7, create_new_model, temp_dir)
 
 
-class St7ExistingModel(St7Model):
+class St7OpenFile(St7Model):
     def __init__(self, fn_st7: T_Path, temp_dir=None):
         create_new_model = False
 

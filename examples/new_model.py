@@ -3,7 +3,7 @@ from st7_wrap import st7
 
 
 # Context manager handles St7OpenFile or St7NewFile, then St7CloseFile at the end.
-with st7.St7NewModel(r"c:\temp\NewModel.st7") as st7_model:
+with st7.St7NewFile(r"c:\temp\NewModel.st7") as st7_model:
 
     # Make some nodes - Vector3 type has some conveniences, or just use a list or tuple.
     st7_model.St7SetNodeXYZ(1, st7.Vector3(1.0, 1.0, 0.0))

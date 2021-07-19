@@ -221,6 +221,13 @@ class AttributeSequenceEntry(typing.NamedTuple):
     ipAttrID: int
 
 
+class TopologicalGraphEdge(enum.Enum):
+    """What defines a topological graph edge when exporting data for networkx graphs"""
+    node = enum.auto()
+    edge = enum.auto()
+    face = enum.auto()
+
+
 class St7Model:
     _fn: str = None
     _temp_dir: str = None

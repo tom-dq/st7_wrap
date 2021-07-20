@@ -1,4 +1,5 @@
-"""This is the code to generate the exceptions from the Strand7 API."""
+"""This is the code to generate the exceptions from the Strand7 API, which is in st7_wrap as exc.py"""
+
 
 import ctypes
 import textwrap

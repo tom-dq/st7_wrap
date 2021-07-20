@@ -1,4 +1,5 @@
-"""Python Enum versions of some Strand7 constants"""
+"""Python Enum versions of some Strand7 constants. This script uses the Strand7 API to create const.py"""
+
 
 import typing
 import collections

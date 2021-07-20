@@ -1,4 +1,6 @@
-Here's what I do to get set up for local development:
+## Local Dev
+
+Here's what I do to get set up for local development
 
  - Clone the repository locally.
  - Make a vitrual env
@@ -15,6 +17,14 @@ Here's what I do to get set up for local development:
 
 `pip install -r .\requirements_dev.txt`
 
- - Crop an animated gif from a recording
+ ## Updating to a new version of the Strand7 API.
+
+ 1. Copy the new `ST7API.py` to all the places it needs to be (`build`, `examples`, `src\st7_wrap`).
+ 1. Regenerate constants and exceptions by running `build\_constants_generate.py` and `build\_exceptions_generate`.
+ 1. Compare the changes and commit them if all good.
+ 1. Update `README.md` with the new version
+ 1. Bump version number and release onto PyPI
+
+ ## Crop an animated gif from a recording
 
 `ffmpeg -i demo_full_2.mp4 -vf "crop=800:230:300:75,fps=24,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 output2.gif`

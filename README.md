@@ -1,6 +1,6 @@
 # st7_wrap
 
-An opinionated wrapper around the Strand7 / Straus7 API.
+An opinionated wrapper around the Strand7 / Straus7 API, **neither affiliated with nor endorsed by Strand7 Pty Ltd.**
 
 
 ## Background

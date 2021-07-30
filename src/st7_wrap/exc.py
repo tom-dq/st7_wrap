@@ -1,7 +1,7 @@
 """Exceptions auto-generated from error codes in St7API.py by _exceptions_generate.py"""
 
 
-class St7BaseException(BaseException):
+class St7BaseException(Exception):
     """Base class for all ERR7_ and SE_ errors"""
 
     def __repr__(self):

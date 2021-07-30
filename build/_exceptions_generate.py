@@ -12,8 +12,9 @@ _BASE_EXCEPTION_NAME = "St7BaseException"
 _ERR_DICT = "_err_dict"
 _SOLVER_TERM_DICT = "_solver_term_dict"
 
+
 def __make_base_exception() -> typing.Iterable[str]:
-    yield f"class {_BASE_EXCEPTION_NAME}(BaseException):"
+    yield f"class {_BASE_EXCEPTION_NAME}(Exception):"
     yield '    """Base class for all ERR7_ and SE_ errors"""'
     yield "    "
     yield "    def __repr__(self):"
@@ -33,7 +34,9 @@ def __make_fallback_exception() -> typing.Iterable[str]:
     yield ""
 
 
-def __make_one_exception(error_name: str, description_override: typing.Optional[str]=None) -> typing.Iterable[str]:
+def __make_one_exception(
+    error_name: str, description_override: typing.Optional[str] = None
+) -> typing.Iterable[str]:
     """Write out the code for a native Python version of a Strand7 error code.
     To be pasted into the top if this file if it's changed."""
 
@@ -91,7 +94,6 @@ def __make_exception_lookup_dict(error_names, dict_name):
     yield "}"
 
 
-
 def __make_all_exceptions() -> typing.Iterable[str]:
     yield from __make_base_exception()
     yield from __make_fallback_exception()
@@ -104,7 +106,7 @@ def __make_all_exceptions() -> typing.Iterable[str]:
 
     yield from __make_exception_lookup_dict(error_names, _ERR_DICT)
     yield from __make_exception_lookup_dict(term_code_names, _SOLVER_TERM_DICT)
-    
+
 
 def __make_chk(func_name, dict_name) -> typing.Iterable[str]:
     chk_func = f'''def {func_name}(iErr: int):
@@ -120,7 +122,6 @@ def __make_chk(func_name, dict_name) -> typing.Iterable[str]:
     '''
 
     yield from chk_func.splitlines()
-
 
 
 def __make_module() -> typing.Iterable[str]:

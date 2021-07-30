@@ -242,7 +242,7 @@ class St7Model:
         else:
             self._temp_dir = tempfile.gettempdir()
 
-        chk(St7API.St7Init())
+        self.St7Init()
 
         if create_new_model:
             chk(St7API.St7NewFile(self.uID, self._fn.encode(), self._temp_dir.encode()))
@@ -259,6 +259,9 @@ class St7Model:
     def close(self):
         chk(St7API.St7CloseFile(self.uID))
         chk(St7API.St7Release())
+
+    def St7Init(self):
+        chk(St7API.St7Init())
 
     def open_results(self, fn_res: T_Path) -> "St7Results":
         return St7Results(self, fn_res)

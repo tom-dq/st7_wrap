@@ -25,5 +25,3 @@ with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
         print("Error from St7GetElementConnection(const.Entity.tyPLATE, -10):")
         print(e)
         print()
-
-    print(exc.St7BaseException)

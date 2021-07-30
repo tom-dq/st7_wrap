@@ -16,10 +16,10 @@ def __make_base_exception() -> typing.Iterable[str]:
     yield '    """Base class for all ERR7_ and SE_ errors"""'
     yield "    "
     yield "    def __repr__(self):"
-    yield '        return f"{self.self.__class__.__name__()}"'
+    yield '        return f"{self.__class__.__name__}()"'
     yield "    "
     yield "    def __str__(self):"
-    yield '        return f"{self.self.__class__.__name__()}: {self.__doc__}"'
+    yield '        return f"{self.__class__.__name__}: {self.__doc__}"'
     yield ""
     yield ""
 

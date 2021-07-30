@@ -80,22 +80,30 @@ with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
     try:
         missing_node = st7_model.St7GetNodeXYZ(999)
 
-    except exc.ERR7_ExceededTotal:
-        print("Didn't find that node sorry.")
+    except exc.ERR7_ExceededTotal as e:
+        print("Error from St7GetNodeXYZ(999):")
+        print(e)
+        print()
 
     # To catch all Strand7 exceptions (ERR7_... or SE_...), use St7BaseException
     try:
-        no_plate = st7_model.St7GetElementConnection(const.Entity.tyPLATE, 12345)
+        no_plate = st7_model.St7GetElementConnection(const.Entity.tyPLATE, -10)
 
-    except exc.St7BaseException:
-        print("Some non-zero return code from a Strand7 function.")
+    except exc.St7BaseException as e:
+        print("Error from St7GetElementConnection(const.Entity.tyPLATE, -10):")
+        print(e)
+        print()
 
 ```
 
 Output:
 ```
-Didn't find that node sorry.
-Some non-zero return code from a Strand7 function.
+Error from St7GetNodeXYZ(999):
+ERR7_ExceededTotal: The total number of entities was exceeded.
+
+Error from St7GetElementConnection(const.Entity.tyPLATE, -10):
+ERR7_InvalidEntityNumber: The specified entity number is not valid.
+
 ```
 
 ### Change a plate property

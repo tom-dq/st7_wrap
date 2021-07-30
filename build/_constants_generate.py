@@ -32,6 +32,7 @@ _all_const_meta = [
     ConstMeta("AttributeType", "aoRestraint"),
     ConstMeta("ImageType", "itBitmap8Bit"),
     ConstMeta("ScaleType", "dsPercent"),
+    ConstMeta("GlobalInteger", "ivAttachmentsCreated"),
 ]
 
 

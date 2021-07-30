@@ -11,6 +11,12 @@ class St7BaseException(BaseException):
         return f"{self.__class__.__name__}: {self.__doc__}"
 
 
+class St7UnknownException(St7BaseException):
+    """Unknown St7 Error"""
+
+    pass
+
+
 class ERR7_APIAlreadyInitialised(St7BaseException):
     """The API is already initialised."""
 
@@ -3526,8 +3532,74 @@ class SE_ZeroLengthRigidLinkGenerated(St7BaseException):
     pass
 
 
-class St7UnknownException(St7BaseException):
-    """Unknown St7 Error"""
+class ST_Abnormal(St7BaseException):
+    """ST_Abnormal"""
+
+    pass
+
+
+class ST_CreateLog(St7BaseException):
+    """ST_CreateLog"""
+
+    pass
+
+
+class ST_Internal(St7BaseException):
+    """ST_Internal"""
+
+    pass
+
+
+class ST_MemError(St7BaseException):
+    """ST_MemError"""
+
+    pass
+
+
+class ST_NoDisk(St7BaseException):
+    """ST_NoDisk"""
+
+    pass
+
+
+class ST_NoError(St7BaseException):
+    """ST_NoError"""
+
+    pass
+
+
+class ST_NoLicence(St7BaseException):
+    """ST_NoLicence"""
+
+    pass
+
+
+class ST_NoRam(St7BaseException):
+    """ST_NoRam"""
+
+    pass
+
+
+class ST_OpenLog(St7BaseException):
+    """ST_OpenLog"""
+
+    pass
+
+
+class ST_Scratch(St7BaseException):
+    """ST_Scratch"""
+
+    pass
+
+
+class ST_UserStop(St7BaseException):
+    """ST_UserStop"""
+
+    pass
+
+
+class ST_WriteLog(St7BaseException):
+    """ST_WriteLog"""
 
     pass
 
@@ -4112,15 +4184,40 @@ _err_dict = {
     1100: SE_InactiveCavityControlCase,
     1101: SE_MovingLoadModuleNotLicensed,
 }
+_solver_term_dict = {
+    -11: ST_NoLicence,
+    -10: ST_Scratch,
+    -9: ST_MemError,
+    -8: ST_WriteLog,
+    -7: ST_CreateLog,
+    -6: ST_OpenLog,
+    -5: ST_NoRam,
+    -4: ST_NoDisk,
+    -3: ST_Internal,
+    -2: ST_UserStop,
+    -1: ST_Abnormal,
+    0: ST_NoError,
+}
 
 
 def chk(iErr: int):
+    """Checks a Strand7 error code and raised an exception which inherits from
+    St7BaseException if an error code was returned."""
+    if iErr == 0:
+        return
+
+    exc = _err_dict.get(iErr, St7UnknownException)
+
+    raise exc()
+
+
+def chk_st(iErr: int):
     """Checks a Strand7 error code and raised an exception which inherits from
     St7BaseException if an error code was returned."""
 
     if iErr == 0:
         return
 
-    exc = _err_dict.get(iErr, St7UnknownException)
+    exc = _solver_term_dict.get(iErr, St7UnknownException)
 
     raise exc()

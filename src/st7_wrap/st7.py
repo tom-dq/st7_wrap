@@ -19,7 +19,7 @@ except ImportError:
 
 import St7API
 
-from st7_wrap.exc import chk
+from st7_wrap.exc import chk, chk_st
 from st7_wrap import arrays
 from st7_wrap import const
 
@@ -223,6 +223,7 @@ class AttributeSequenceEntry(typing.NamedTuple):
 
 class TopologicalGraphEdge(enum.Enum):
     """What defines a topological graph edge when exporting data for networkx graphs"""
+
     node = enum.auto()
     edge = enum.auto()
     face = enum.auto()
@@ -319,8 +320,18 @@ class St7Model:
         doubles = (ctypes.c_double * 3)(*load)
         chk(St7API.St7SetPlatePreLoad3(self.uID, iPlate, iLoadCase, load_type.value, doubles))
 
-    def St7RunSolver(self, solver: const.SolverType, solver_mode: const.SolverMode, wait: bool):
+    def St7RunSolver(self, solver: const.SolverType, solver_mode: const.SolverMode, wait: bool, raise_on_termination_error: bool=False):
+        """If raise_on_termination_error is True, an exception will be raised for any non-zero terminmation code. Requires the DLL solver to be in use."""
+        if raise_on_termination_error:
+            if not self.St7GetUseSolverDLL():
+                raise ValueError("raise_on_termination_error needs the DLL solver - please call St7SetUseSolverDLL.")
+
         chk(St7API.St7RunSolver(self.uID, solver.value, solver_mode.value, wait))
+
+        if raise_on_termination_error:
+            st_error = self.St7GetGlobalIntegerValue(const.GlobalInteger.ivSolverTerminationCode)
+            chk_st(st_error)
+
 
     def St7EnableNLALoadCase(self, stage: int, load_case_num: int):
         chk(
@@ -483,6 +494,11 @@ class St7Model:
         ct_int = ctypes.c_long(use_dll)
         chk(St7API.St7SetUseSolverDLL(ct_int))
 
+    def St7GetUseSolverDLL(self) -> bool:
+        ct_int = ctypes.c_long()
+        chk(St7API.St7GetUseSolverDLL(ct_int))
+        return bool(ct_int.value)
+
     def St7SetNumTimeStepRows(self, num_rows: int):
         chk(St7API.St7SetNumTimeStepRows(self.uID, num_rows))
 
@@ -614,6 +630,12 @@ class St7Model:
                 const.Entity.tyNODE, node_num, const.AttributeType.aoRestraint
             ):
                 yield self.St7GetNodeRestraint6(node_num, attr_seq_entry.ipAttrCase)
+
+    def St7GetGlobalIntegerValue(self, index: const.GlobalInteger) -> int:
+        value = ctypes.c_long()
+        chk(St7API.St7GetGlobalIntegerValue(index, value))
+
+        return value.value
 
 
 class St7NewFile(St7Model):

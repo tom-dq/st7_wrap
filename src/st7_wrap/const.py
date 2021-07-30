@@ -2,7 +2,6 @@
 
 import enum
 
-
 import St7API
 
 
@@ -26,6 +25,7 @@ __all__ = [
     "AttributeType",
     "ImageType",
     "ScaleType",
+    "GlobalInteger",
 ]
 
 
@@ -476,3 +476,85 @@ class ImageType(enum.Enum):
 class ScaleType(enum.Enum):
     dsPercent = St7API.dsPercent
     dsAbsolute = St7API.dsAbsolute
+
+
+class GlobalInteger(enum.Enum):
+    ivTessellationsFailed = St7API.ivTessellationsFailed
+    ivSeamsAdded = St7API.ivSeamsAdded
+    ivIntersectionsFound = St7API.ivIntersectionsFound
+    ivPlateEdgesAssigned = St7API.ivPlateEdgesAssigned
+    ivPlateEdgesNotFullyAssigned = St7API.ivPlateEdgesNotFullyAssigned
+    ivAttachmentsCreated = St7API.ivAttachmentsCreated
+    ivAttachmentsFailed = St7API.ivAttachmentsFailed
+    ivNodesCreated = St7API.ivNodesCreated
+    ivNodesDeleted = St7API.ivNodesDeleted
+    ivNodesMoved = St7API.ivNodesMoved
+    ivBeamsChanged = St7API.ivBeamsChanged
+    ivBeamsCollapsed = St7API.ivBeamsCollapsed
+    ivBeamsCreated = St7API.ivBeamsCreated
+    ivBeamsDeleted = St7API.ivBeamsDeleted
+    ivBeamsFailed = St7API.ivBeamsFailed
+    ivBeamsMoved = St7API.ivBeamsMoved
+    ivBeamsSplit = St7API.ivBeamsSplit
+    ivBeamsSubdivided = St7API.ivBeamsSubdivided
+    ivPlatesChanged = St7API.ivPlatesChanged
+    ivPlatesCollapsed = St7API.ivPlatesCollapsed
+    ivPlatesCreated = St7API.ivPlatesCreated
+    ivPlatesDeleted = St7API.ivPlatesDeleted
+    ivPlatesFailed = St7API.ivPlatesFailed
+    ivPlatesGraded = St7API.ivPlatesGraded
+    ivPlatesMoved = St7API.ivPlatesMoved
+    ivPlatesSplit = St7API.ivPlatesSplit
+    ivPlatesSubdivided = St7API.ivPlatesSubdivided
+    ivBricksChanged = St7API.ivBricksChanged
+    ivBricksCollapsed = St7API.ivBricksCollapsed
+    ivBricksCreated = St7API.ivBricksCreated
+    ivBricksDeleted = St7API.ivBricksDeleted
+    ivBricksFailed = St7API.ivBricksFailed
+    ivBricksGraded = St7API.ivBricksGraded
+    ivBricksMoved = St7API.ivBricksMoved
+    ivBricksSplit = St7API.ivBricksSplit
+    ivBricksSubdivided = St7API.ivBricksSubdivided
+    ivLinksChanged = St7API.ivLinksChanged
+    ivLinksCollapsed = St7API.ivLinksCollapsed
+    ivLinksCreated = St7API.ivLinksCreated
+    ivLinksDeleted = St7API.ivLinksDeleted
+    ivLinksMoved = St7API.ivLinksMoved
+    ivLoadPathsChanged = St7API.ivLoadPathsChanged
+    ivLoadPathsCreated = St7API.ivLoadPathsCreated
+    ivLoadPathsMoved = St7API.ivLoadPathsMoved
+    ivFacesChanged = St7API.ivFacesChanged
+    ivFacesCreated = St7API.ivFacesCreated
+    ivFacesDeleted = St7API.ivFacesDeleted
+    ivFacesFailed = St7API.ivFacesFailed
+    ivFacesMoved = St7API.ivFacesMoved
+    ivEdgesMorphed = St7API.ivEdgesMorphed
+    ivEdgesSubdivided = St7API.ivEdgesSubdivided
+    ivLoopsDeleted = St7API.ivLoopsDeleted
+    ivAttributesApplied = St7API.ivAttributesApplied
+    ivUCSCreated = St7API.ivUCSCreated
+    ivPatchPlatesCreated = St7API.ivPatchPlatesCreated
+    ivLoadCasesCreated = St7API.ivLoadCasesCreated
+    ivFilletsCreated = St7API.ivFilletsCreated
+    ivFilletsFailed = St7API.ivFilletsFailed
+    ivLoftSeriesFound = St7API.ivLoftSeriesFound
+    ivDuplicateBeamsDeleted = St7API.ivDuplicateBeamsDeleted
+    ivDuplicatePlatesDeleted = St7API.ivDuplicatePlatesDeleted
+    ivDuplicateBricksDeleted = St7API.ivDuplicateBricksDeleted
+    ivDuplicateLinksDeleted = St7API.ivDuplicateLinksDeleted
+    ivStringGroupsPacked = St7API.ivStringGroupsPacked
+    ivClipboardNodes = St7API.ivClipboardNodes
+    ivClipboardBeams = St7API.ivClipboardBeams
+    ivClipboardPlates = St7API.ivClipboardPlates
+    ivClipboardBricks = St7API.ivClipboardBricks
+    ivClipboardLinks = St7API.ivClipboardLinks
+    ivClipboardLoadPaths = St7API.ivClipboardLoadPaths
+    ivClipboardFaces = St7API.ivClipboardFaces
+    ivClipboardVertices = St7API.ivClipboardVertices
+    ivFacesMeshed = St7API.ivFacesMeshed
+    ivFacesPartiallyMeshed = St7API.ivFacesPartiallyMeshed
+    ivFacesNotMeshed = St7API.ivFacesNotMeshed
+    ivSolverTerminationCode = St7API.ivSolverTerminationCode
+    ivSolidsMeshed = St7API.ivSolidsMeshed
+    ivSolidsPartiallyMeshed = St7API.ivSolidsPartiallyMeshed
+    ivSolidsNotMeshed = St7API.ivSolidsNotMeshed

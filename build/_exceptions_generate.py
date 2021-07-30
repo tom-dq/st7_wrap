@@ -9,7 +9,8 @@ import typing
 import St7API
 
 _BASE_EXCEPTION_NAME = "St7BaseException"
-
+_ERR_DICT = "_err_dict"
+_SOLVER_TERM_DICT = "_solver_term_dict"
 
 def __make_base_exception() -> typing.Iterable[str]:
     yield f"class {_BASE_EXCEPTION_NAME}(BaseException):"
@@ -32,13 +33,17 @@ def __make_fallback_exception() -> typing.Iterable[str]:
     yield ""
 
 
-def __make_one_exception(error_name: str) -> typing.Iterable[str]:
+def __make_one_exception(error_name: str, description_override: typing.Optional[str]=None) -> typing.Iterable[str]:
     """Write out the code for a native Python version of a Strand7 error code.
     To be pasted into the top if this file if it's changed."""
 
     iErr = getattr(St7API, error_name)
 
     def get_description() -> str:
+
+        if description_override:
+            return description_override
+
         sb = ctypes.create_string_buffer(St7API.kMaxStrLen)
 
         # Try API error code first
@@ -67,44 +72,55 @@ def __make_one_exception(error_name: str) -> typing.Iterable[str]:
         yield '    """'
 
     yield "    pass"
-    yield ""
-    yield ""
 
 
-def __make_all_exceptions() -> typing.Iterable[str]:
-    yield from __make_base_exception()
-
-    error_names = [err for err in dir(St7API) if err.startswith("ERR7_") or err.startswith("SE_")]
-
+def __make_exceptions(error_names, should_override_description):
     # Sort alphabetically for the exception classes
     error_names.sort()
     for error_name in error_names:
-        yield from __make_one_exception(error_name)
+        description_override = error_name if should_override_description else None
+        yield from __make_one_exception(error_name, description_override=description_override)
 
-    yield from __make_fallback_exception()
 
+def __make_exception_lookup_dict(error_names, dict_name):
     # Make the error lookup dictionary (in order of error code integer)
     error_names.sort(key=lambda error_name: getattr(St7API, error_name))
-    yield "_err_dict = {"
+    yield f"{dict_name} = {{"
     for error_name in error_names:
         yield f"    {getattr(St7API, error_name)}: {error_name},"
     yield "}"
 
 
-def __make_chk() -> typing.Iterable[str]:
-    chk_func = f'''def chk(iErr: int):
+
+def __make_all_exceptions() -> typing.Iterable[str]:
+    yield from __make_base_exception()
+    yield from __make_fallback_exception()
+
+    error_names = [err for err in dir(St7API) if err.startswith("ERR7_") or err.startswith("SE_")]
+    term_code_names = [st_name for st_name in dir(St7API) if st_name.startswith("ST_")]
+
+    yield from __make_exceptions(error_names, False)
+    yield from __make_exceptions(term_code_names, True)
+
+    yield from __make_exception_lookup_dict(error_names, _ERR_DICT)
+    yield from __make_exception_lookup_dict(term_code_names, _SOLVER_TERM_DICT)
+    
+
+def __make_chk(func_name, dict_name) -> typing.Iterable[str]:
+    chk_func = f'''def {func_name}(iErr: int):
     """Checks a Strand7 error code and raised an exception which inherits from
        {_BASE_EXCEPTION_NAME} if an error code was returned."""
     
     if iErr == 0:
         return
 
-    exc = _err_dict.get(iErr, St7UnknownException)
+    exc = {dict_name}.get(iErr, St7UnknownException)
 
     raise exc()
     '''
 
     yield from chk_func.splitlines()
+
 
 
 def __make_module() -> typing.Iterable[str]:
@@ -115,7 +131,9 @@ def __make_module() -> typing.Iterable[str]:
     yield from __make_all_exceptions()
     yield ""
     yield ""
-    yield from __make_chk()
+    yield from __make_chk("chk", _ERR_DICT)
+    yield ""
+    yield from __make_chk("chk_st", _SOLVER_TERM_DICT)
     yield ""
 
 

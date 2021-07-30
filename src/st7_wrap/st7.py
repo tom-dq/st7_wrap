@@ -491,13 +491,13 @@ class St7Model:
             return St7ModelWindow(model=self)
 
     def St7SetUseSolverDLL(self, use_dll: bool):
-        ct_int = ctypes.c_long(use_dll)
-        chk(St7API.St7SetUseSolverDLL(ct_int))
+        ct_bool = ctypes.c_bool(use_dll)
+        chk(St7API.St7SetUseSolverDLL(ct_bool))
 
     def St7GetUseSolverDLL(self) -> bool:
-        ct_int = ctypes.c_long()
-        chk(St7API.St7GetUseSolverDLL(ct_int))
-        return bool(ct_int.value)
+        ct_bool = ctypes.c_bool()
+        chk(St7API.St7GetUseSolverDLL(ct_bool))
+        return ct_bool.value
 
     def St7SetNumTimeStepRows(self, num_rows: int):
         chk(St7API.St7SetNumTimeStepRows(self.uID, num_rows))

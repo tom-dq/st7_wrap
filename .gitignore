@@ -2,5 +2,6 @@ St7API.py
 */St7API.py
 **/St7API.py
 **/__pycache__/*.*
+dist/
 venv/
-author_email.txt
+auth_email.txt

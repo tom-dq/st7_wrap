@@ -1,0 +1,14 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/st7_wrap/St7API.py
+src/st7_wrap/__init__.py
+src/st7_wrap/arrays.py
+src/st7_wrap/const.py
+src/st7_wrap/exc.py
+src/st7_wrap/st7.py
+src/st7_wrap.egg-info/PKG-INFO
+src/st7_wrap.egg-info/SOURCES.txt
+src/st7_wrap.egg-info/dependency_links.txt
+src/st7_wrap.egg-info/top_level.txt

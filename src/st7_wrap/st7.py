@@ -633,7 +633,7 @@ class St7Model:
 
     def St7GetGlobalIntegerValue(self, index: const.GlobalInteger) -> int:
         value = ctypes.c_long()
-        chk(St7API.St7GetGlobalIntegerValue(index, value))
+        chk(St7API.St7GetGlobalIntegerValue(index.value, value))
 
         return value.value
 

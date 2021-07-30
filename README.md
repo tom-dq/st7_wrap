@@ -1,6 +1,6 @@
 # st7_wrap
 
-An opinionated wrapper around the Strand7 / Straus7 API, **neither affiliated with nor endorsed by Strand7 Pty Ltd.**
+An opinionated wrapper around the Strand7 / Straus7 API, neither affiliated with nor endorsed by Strand7 Pty Ltd.
 
 
 ## Background
@@ -11,6 +11,7 @@ Over the years I've used the Strand7 API on a number of projects, and sometimes 
 ## Installation
 
  - Ensure you've installed [Strand7 R3](http://www.strand7.com/r3/) and you're running Preview 42.
+ - Use Python 3.7+
  - Make sure the official Strand7 API is installed and running (contact [Strand7 Support](https://www.strand7.com/html/aboutsupport.htm) if this is not the case). So you should be able to do this in the Python REPL where ever you want
  to use `st7_wrap`:
 
@@ -80,10 +81,8 @@ with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
     try:
         missing_node = st7_model.St7GetNodeXYZ(999)
 
-    except exc.ERR7_ExceededTotal as e:
-        print("Error from St7GetNodeXYZ(999):")
-        print(e)
-        print()
+    except exc.ERR7_ExceededTotal:
+        print("Couldn't get node 999.\n")
 
     # To catch all Strand7 exceptions (ERR7_... or SE_...), use St7BaseException
     try:
@@ -92,18 +91,15 @@ with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
     except exc.St7BaseException as e:
         print("Error from St7GetElementConnection(const.Entity.tyPLATE, -10):")
         print(e)
-        print()
 
 ```
 
 Output:
 ```
-Error from St7GetNodeXYZ(999):
-ERR7_ExceededTotal: The total number of entities was exceeded.
+Couldn't get node 999.
 
-Error from St7GetElementConnection(const.Entity.tyPLATE, -10):
+Error from St7GetElementConnection(const.Entity.tyPLATE, -10):     
 ERR7_InvalidEntityNumber: The specified entity number is not valid.
-
 ```
 
 ### Change a plate property

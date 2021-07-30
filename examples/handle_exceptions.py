@@ -12,10 +12,8 @@ with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
     try:
         missing_node = st7_model.St7GetNodeXYZ(999)
 
-    except exc.ERR7_ExceededTotal as e:
-        print("Error from St7GetNodeXYZ(999):")
-        print(e)
-        print()
+    except exc.ERR7_ExceededTotal:
+        print("Couldn't get node 999.\n")
 
     # To catch all Strand7 exceptions (ERR7_... or SE_...), use St7BaseException
     try:
@@ -24,4 +22,3 @@ with st7.St7NewFile(r"c:\temp\Model.st7") as st7_model:
     except exc.St7BaseException as e:
         print("Error from St7GetElementConnection(const.Entity.tyPLATE, -10):")
         print(e)
-        print()

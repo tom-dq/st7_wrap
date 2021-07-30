@@ -14,7 +14,12 @@ _BASE_EXCEPTION_NAME = "St7BaseException"
 def __make_base_exception() -> typing.Iterable[str]:
     yield f"class {_BASE_EXCEPTION_NAME}(BaseException):"
     yield '    """Base class for all ERR7_ and SE_ errors"""'
-    yield "    pass"
+    yield "    "
+    yield "    def __repr__(self):"
+    yield '        return f"{self.self.__class__.__name__()}"'
+    yield "    "
+    yield "    def __str__(self):"
+    yield '        return f"{self.self.__class__.__name__()}: {self.__doc__}"'
     yield ""
     yield ""
 

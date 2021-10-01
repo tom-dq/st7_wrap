@@ -21,9 +21,9 @@ Here's what I do to get set up for local development
 
  1. Copy the new `ST7API.py` to all the places it needs to be (`build`, `examples`, `src\st7_wrap`).
  1. Regenerate constants and exceptions by running `build\_constants_generate.py` and `build\_exceptions_generate`.
+ 1. Format updated code with Black. Note to myself - in my VSCode this is Shift-Alt-F to reformat.
  1. Compare the changes and commit them if all good.
  1. Update `README.md` with the new version
- 1. Bump version number and release onto PyPI
 
 ## Creating a package
  1. Bump the version number in `setup.cfg`

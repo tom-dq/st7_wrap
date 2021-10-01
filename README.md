@@ -10,7 +10,7 @@ Over the years I've used the Strand7 API on a number of projects, and sometimes 
 
 ## Installation
 
- - Ensure you've installed [Strand7 R3](http://www.strand7.com/r3/) and you're running Preview 42.
+ - Ensure you've installed [Strand7](http://www.strand7.com/) Release 3.1.1.
  - Use Python 3.7+
  - Make sure the official Strand7 API is installed and running (contact [Strand7 Support](https://www.strand7.com/html/aboutsupport.htm) if this is not the case). So you should be able to do this in the Python REPL where ever you want
  to use `st7_wrap`:
@@ -241,6 +241,9 @@ with st7.St7OpenFile(r"c:\temp\ExistingModel.st7") as st7_model:
                 r"c:\temp\St7Results.png", const.ImageType.itPNG, 1600, 1200
             )
 ```
+
+Then if you open up `c:\temp\St7Results.png` you will have an image of the results:
+![Autocomplete in arrays](images/St7Results.png)
 
 
 ## Acknowledgments

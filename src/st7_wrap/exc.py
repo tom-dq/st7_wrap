@@ -1945,6 +1945,12 @@ class ERR7_InvalidSolverScheme(St7BaseException):
     pass
 
 
+class ERR7_InvalidSolverType(St7BaseException):
+    """The specified solver type is not valid."""
+
+    pass
+
+
 class ERR7_InvalidSortMethod(St7BaseException):
     """The specified sort method is not valid."""
 
@@ -2851,12 +2857,6 @@ class ERR7_UnknownResultType(St7BaseException):
     pass
 
 
-class ERR7_UnknownSolver(St7BaseException):
-    """The specified solver type is not valid."""
-
-    pass
-
-
 class ERR7_UnknownSubType(St7BaseException):
     """Unknown result subtype."""
 
@@ -3363,7 +3363,7 @@ class SE_NoPlateProperties(St7BaseException):
 
 
 class SE_NoResponseVariablesDefined(St7BaseException):
-    """Solver Error: No response variables (entity attributes) have been defined."""
+    """Solver Error: No valid response variables (entity attributes) have been defined."""
 
     pass
 
@@ -3681,7 +3681,7 @@ _err_dict = {
     61: ERR7_InvalidSectionProperties,
     62: ERR7_PlateDoesNotHaveThickness,
     63: ERR7_IncompatibleMaterialCombination,
-    64: ERR7_UnknownSolver,
+    64: ERR7_InvalidSolverType,
     65: ERR7_InvalidSolverMode,
     66: ERR7_InvalidMirrorOption,
     67: ERR7_SectionCannotBeMirrored,
@@ -4203,6 +4203,7 @@ _solver_term_dict = {
 def chk(iErr: int):
     """Checks a Strand7 error code and raised an exception which inherits from
     St7BaseException if an error code was returned."""
+
     if iErr == 0:
         return
 

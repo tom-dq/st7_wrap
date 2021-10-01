@@ -143,8 +143,8 @@ class SampleLocation(enum.Enum):
 
 class PlateSurface(enum.Enum):
     psPlateMidPlane = St7API.psPlateMidPlane
-    psPlateZMinus = St7API.psPlateZMinus
-    psPlateZPlus = St7API.psPlateZPlus
+    psPlateMinusZ = St7API.psPlateMinusZ
+    psPlatePlusZ = St7API.psPlatePlusZ
 
 
 class SolverDefaultLogical(enum.Enum):
@@ -176,7 +176,7 @@ class SolverDefaultLogical(enum.Enum):
     spSaveCQCSpectral = St7API.spSaveCQCSpectral
     spDoResidualsCheck = St7API.spDoResidualsCheck
     spSuppressAllSingularities = St7API.spSuppressAllSingularities
-    spUnusedL29 = St7API.spUnusedL29
+    spAutoPCGIterations = St7API.spAutoPCGIterations
     spUnusedL30 = St7API.spUnusedL30
     spReducedLogFile = St7API.spReducedLogFile
     spIncludeRotationalMass = St7API.spIncludeRotationalMass
@@ -334,12 +334,12 @@ class PlateContour(enum.Enum):
     ctPlateEdgeNormalSupport = St7API.ctPlateEdgeNormalSupport
     ctPlateEdgeLateralSupport = St7API.ctPlateEdgeLateralSupport
     ctPlateEdgeSupportGap = St7API.ctPlateEdgeSupportGap
-    ctPlateFaceNormalSupportMZ = St7API.ctPlateFaceNormalSupportMZ
-    ctPlateFaceNormalSupportPZ = St7API.ctPlateFaceNormalSupportPZ
-    ctPlateFaceLateralSupportMZ = St7API.ctPlateFaceLateralSupportMZ
-    ctPlateFaceLateralSupportPZ = St7API.ctPlateFaceLateralSupportPZ
-    ctPlateFaceSupportGapMZ = St7API.ctPlateFaceSupportGapMZ
-    ctPlateFaceSupportGapPZ = St7API.ctPlateFaceSupportGapPZ
+    ctPlateFaceNormalSupportMinusZ = St7API.ctPlateFaceNormalSupportMinusZ
+    ctPlateFaceNormalSupportPlusZ = St7API.ctPlateFaceNormalSupportPlusZ
+    ctPlateFaceLateralSupportMinusZ = St7API.ctPlateFaceLateralSupportMinusZ
+    ctPlateFaceLateralSupportPlusZ = St7API.ctPlateFaceLateralSupportPlusZ
+    ctPlateFaceSupportGapMinusZ = St7API.ctPlateFaceSupportGapMinusZ
+    ctPlateFaceSupportGapPlusZ = St7API.ctPlateFaceSupportGapPlusZ
     ctPlateTemperature = St7API.ctPlateTemperature
     ctPlateTempGradient = St7API.ctPlateTempGradient
     ctPlatePreStressX = St7API.ctPlatePreStressX
@@ -356,20 +356,20 @@ class PlateContour(enum.Enum):
     ctPlateEdgeNormalPressure = St7API.ctPlateEdgeNormalPressure
     ctPlateEdgeShear = St7API.ctPlateEdgeShear
     ctPlateEdgeTransverseShear = St7API.ctPlateEdgeTransverseShear
-    ctPlateEdgeGlobalPressure = St7API.ctPlateEdgeGlobalPressure
     ctPlateEdgeGlobalPressureX = St7API.ctPlateEdgeGlobalPressureX
     ctPlateEdgeGlobalPressureY = St7API.ctPlateEdgeGlobalPressureY
     ctPlateEdgeGlobalPressureZ = St7API.ctPlateEdgeGlobalPressureZ
-    ctPlatePressureNormalMZ = St7API.ctPlatePressureNormalMZ
-    ctPlatePressureNormalPZ = St7API.ctPlatePressureNormalPZ
-    ctPlatePressureGlobalMZ = St7API.ctPlatePressureGlobalMZ
-    ctPlatePressureGlobalXMZ = St7API.ctPlatePressureGlobalXMZ
-    ctPlatePressureGlobalYMZ = St7API.ctPlatePressureGlobalYMZ
-    ctPlatePressureGlobalZMZ = St7API.ctPlatePressureGlobalZMZ
-    ctPlatePressureGlobalPZ = St7API.ctPlatePressureGlobalPZ
-    ctPlatePressureGlobalXPZ = St7API.ctPlatePressureGlobalXPZ
-    ctPlatePressureGlobalYPZ = St7API.ctPlatePressureGlobalYPZ
-    ctPlatePressureGlobalZPZ = St7API.ctPlatePressureGlobalZPZ
+    ctPlateEdgeGlobalPressure = St7API.ctPlateEdgeGlobalPressure
+    ctPlateNormalPressureMinusZ = St7API.ctPlateNormalPressureMinusZ
+    ctPlateNormalPressurePlusZ = St7API.ctPlateNormalPressurePlusZ
+    ctPlateGlobalPressureXMinusZ = St7API.ctPlateGlobalPressureXMinusZ
+    ctPlateGlobalPressureYMinusZ = St7API.ctPlateGlobalPressureYMinusZ
+    ctPlateGlobalPressureZMinusZ = St7API.ctPlateGlobalPressureZMinusZ
+    ctPlateGlobalPressureMinusZ = St7API.ctPlateGlobalPressureMinusZ
+    ctPlateGlobalPressureXPlusZ = St7API.ctPlateGlobalPressureXPlusZ
+    ctPlateGlobalPressureYPlusZ = St7API.ctPlateGlobalPressureYPlusZ
+    ctPlateGlobalPressureZPlusZ = St7API.ctPlateGlobalPressureZPlusZ
+    ctPlateGlobalPressurePlusZ = St7API.ctPlateGlobalPressurePlusZ
     ctPlateFaceShearX = St7API.ctPlateFaceShearX
     ctPlateFaceShearY = St7API.ctPlateFaceShearY
     ctPlateFaceShearMagnitude = St7API.ctPlateFaceShearMagnitude
@@ -380,14 +380,14 @@ class PlateContour(enum.Enum):
     ctPlateRadiationCoeff = St7API.ctPlateRadiationCoeff
     ctPlateRadiationAmbient = St7API.ctPlateRadiationAmbient
     ctPlateHeatFlux = St7API.ctPlateHeatFlux
-    ctPlateConvectionCoeffZPlus = St7API.ctPlateConvectionCoeffZPlus
-    ctPlateConvectionCoeffZMinus = St7API.ctPlateConvectionCoeffZMinus
-    ctPlateConvectionAmbientZPlus = St7API.ctPlateConvectionAmbientZPlus
-    ctPlateConvectionAmbientZMinus = St7API.ctPlateConvectionAmbientZMinus
-    ctPlateRadiationCoeffZPlus = St7API.ctPlateRadiationCoeffZPlus
-    ctPlateRadiationCoeffZMinus = St7API.ctPlateRadiationCoeffZMinus
-    ctPlateRadiationAmbientZPlus = St7API.ctPlateRadiationAmbientZPlus
-    ctPlateRadiationAmbientZMinus = St7API.ctPlateRadiationAmbientZMinus
+    ctPlateConvectionCoeffPlusZ = St7API.ctPlateConvectionCoeffPlusZ
+    ctPlateConvectionCoeffMinusZ = St7API.ctPlateConvectionCoeffMinusZ
+    ctPlateConvectionAmbientPlusZ = St7API.ctPlateConvectionAmbientPlusZ
+    ctPlateConvectionAmbientMinusZ = St7API.ctPlateConvectionAmbientMinusZ
+    ctPlateRadiationCoeffPlusZ = St7API.ctPlateRadiationCoeffPlusZ
+    ctPlateRadiationCoeffMinusZ = St7API.ctPlateRadiationCoeffMinusZ
+    ctPlateRadiationAmbientPlusZ = St7API.ctPlateRadiationAmbientPlusZ
+    ctPlateRadiationAmbientMinusZ = St7API.ctPlateRadiationAmbientMinusZ
     ctPlateHeatSource = St7API.ctPlateHeatSource
     ctPlateSoilStressSV = St7API.ctPlateSoilStressSV
     ctPlateSoilStressK0 = St7API.ctPlateSoilStressK0
@@ -423,10 +423,10 @@ class BrickContour(enum.Enum):
     ctBrickPreStrainZ = St7API.ctBrickPreStrainZ
     ctBrickPreStrainMagnitude = St7API.ctBrickPreStrainMagnitude
     ctBrickNormalPressure = St7API.ctBrickNormalPressure
-    ctBrickGlobalPressure = St7API.ctBrickGlobalPressure
     ctBrickGlobalPressureX = St7API.ctBrickGlobalPressureX
     ctBrickGlobalPressureY = St7API.ctBrickGlobalPressureY
     ctBrickGlobalPressureZ = St7API.ctBrickGlobalPressureZ
+    ctBrickGlobalPressureMagnitude = St7API.ctBrickGlobalPressureMagnitude
     ctBrickShearX = St7API.ctBrickShearX
     ctBrickShearY = St7API.ctBrickShearY
     ctBrickShearMagnitude = St7API.ctBrickShearMagnitude

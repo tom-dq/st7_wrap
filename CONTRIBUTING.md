@@ -28,7 +28,7 @@ Here's what I do to get set up for local development
 ## Creating a package
  1. Bump the version number in `setup.cfg`
  1. Build with `py -m build`
- 1. Upload to PyPI with `py -m twine upload dist/*`
+ 1. Upload to PyPI with `py -m twine upload dist/st7_wrap-0.0.2*` (or whatever the latest version is)
 
  ## Crop an animated gif from a recording
 

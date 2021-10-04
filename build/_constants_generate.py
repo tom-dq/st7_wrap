@@ -33,6 +33,7 @@ _all_const_meta = [
     ConstMeta("ImageType", "itBitmap8Bit"),
     ConstMeta("ScaleType", "dsPercent"),
     ConstMeta("GlobalInteger", "ivAttachmentsCreated"),
+    ConstMeta("WindowsRefreshMode", "wrAutoRefresh"),
 ]
 
 
@@ -138,13 +139,13 @@ def produce_constants() -> typing.Iterable[str]:
     yield ""
 
     yield "__all__ = ["
-    for const_meta in _all_const_meta:
+    for const_meta in sorted(_all_const_meta):
         yield f'    "{const_meta.name}",'
 
     yield "]"
     yield ""
 
-    for const_meta in _all_const_meta:
+    for const_meta in sorted(_all_const_meta):
         header = name_to_header[const_meta.example_member]
         names_and_vals = clean_headers_to_constants[header]
         yield from _produce_one_enum(const_meta, names_and_vals)

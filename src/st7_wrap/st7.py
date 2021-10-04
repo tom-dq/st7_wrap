@@ -784,6 +784,18 @@ class St7ModelWindow:
     def St7PositionModelWindow(self, left: int, top: int, width: int, height: int):
         chk(St7API.St7PositionModelWindow(self.uID, left, top, width, height))
 
+    def St7EnableWindowViewChanges(self):
+        chk(St7API.St7EnableWindowViewChanges(self.uID))
+
+    def St7DisableWindowViewChanges(self):
+        chk(St7API.St7DisableWindowViewChanges(self.uID))
+
+    def St7SetModelWindowRefresh(self, mode: const.WindowsRefreshMode):
+        chk(St7API.St7SetModelWindowRefresh(self.uID, mode.value))
+
+    def St7SetWindowStatusBarRefreshMode(self, auto_refresh: bool):
+        chk(St7API.St7SetWindowStatusBarRefreshMode(self.uID, auto_refresh))
+
     def St7SetEntityContourIndex(
         self,
         entity: const.Entity,

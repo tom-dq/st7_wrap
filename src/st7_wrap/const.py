@@ -6,252 +6,46 @@ import St7API
 
 
 __all__ = [
-    "Entity",
-    "Property",
-    "SolverType",
-    "SolverMode",
-    "PreLoadType",
-    "NodeResultType",
-    "PlateResultType",
-    "PlateResultSubType",
-    "SampleLocation",
-    "PlateSurface",
-    "SolverDefaultLogical",
-    "SolverDefaultInteger",
-    "TableType",
-    "BeamContour",
-    "PlateContour",
-    "BrickContour",
     "AttributeType",
-    "ImageType",
-    "ScaleType",
+    "BeamContour",
+    "BrickContour",
+    "Entity",
     "GlobalInteger",
+    "ImageType",
+    "NodeResultType",
+    "PlateContour",
+    "PlateResultSubType",
+    "PlateResultType",
+    "PlateSurface",
+    "PreLoadType",
+    "Property",
+    "SampleLocation",
+    "ScaleType",
+    "SolverDefaultInteger",
+    "SolverDefaultLogical",
+    "SolverMode",
+    "SolverType",
+    "TableType",
+    "WindowsRefreshMode",
 ]
 
 
-class Entity(enum.Enum):
-    tyNODE = St7API.tyNODE
-    tyBEAM = St7API.tyBEAM
-    tyPLATE = St7API.tyPLATE
-    tyBRICK = St7API.tyBRICK
-    tyLINK = St7API.tyLINK
-    tyVERTEX = St7API.tyVERTEX
-    tyGEOMETRYEDGE = St7API.tyGEOMETRYEDGE
-    tyGEOMETRYFACE = St7API.tyGEOMETRYFACE
-    tyLOADPATH = St7API.tyLOADPATH
-    tyGEOMETRYCOEDGE = St7API.tyGEOMETRYCOEDGE
-    tyGEOMETRYLOOP = St7API.tyGEOMETRYLOOP
-
-
-class Property(enum.Enum):
-    ptBEAMPROP = St7API.ptBEAMPROP
-    ptPLATEPROP = St7API.ptPLATEPROP
-    ptBRICKPROP = St7API.ptBRICKPROP
-    ptPLYPROP = St7API.ptPLYPROP
-
-
-class SolverType(enum.Enum):
-    stLinearStatic = St7API.stLinearStatic
-    stLinearBuckling = St7API.stLinearBuckling
-    stNonlinearStatic = St7API.stNonlinearStatic
-    stNaturalFrequency = St7API.stNaturalFrequency
-    stHarmonicResponse = St7API.stHarmonicResponse
-    stSpectralResponse = St7API.stSpectralResponse
-    stLinearTransientDynamic = St7API.stLinearTransientDynamic
-    stNonlinearTransientDynamic = St7API.stNonlinearTransientDynamic
-    stSteadyHeat = St7API.stSteadyHeat
-    stTransientHeat = St7API.stTransientHeat
-    stLoadInfluence = St7API.stLoadInfluence
-    stQuasiStatic = St7API.stQuasiStatic
-
-
-class SolverMode(enum.Enum):
-    smNormalRun = St7API.smNormalRun
-    smProgressRun = St7API.smProgressRun
-    smBackgroundRun = St7API.smBackgroundRun
-    smNormalCloseRun = St7API.smNormalCloseRun
-
-
-class PreLoadType(enum.Enum):
-    plBeamPreTension = St7API.plBeamPreTension
-    plBeamPreStrain = St7API.plBeamPreStrain
-    plPlatePreStress = St7API.plPlatePreStress
-    plPlatePreStrain = St7API.plPlatePreStrain
-    plBrickPreStress = St7API.plBrickPreStress
-    plBrickPreStrain = St7API.plBrickPreStrain
-    plCavityPreStress = St7API.plCavityPreStress
-    plCavityPreStrain = St7API.plCavityPreStrain
-
-
-class NodeResultType(enum.Enum):
-    rtNodeDisp = St7API.rtNodeDisp
-    rtNodeVel = St7API.rtNodeVel
-    rtNodeAcc = St7API.rtNodeAcc
-    rtNodePhase = St7API.rtNodePhase
-    rtNodeReact = St7API.rtNodeReact
-    rtNodeTemp = St7API.rtNodeTemp
-    rtNodeFlux = St7API.rtNodeFlux
-    rtNodeInertia = St7API.rtNodeInertia
-    rtNodeInfluence = St7API.rtNodeInfluence
-
-
-class PlateResultType(enum.Enum):
-    rtPlateStress = St7API.rtPlateStress
-    rtPlateStrain = St7API.rtPlateStrain
-    rtPlateEnergyDensity = St7API.rtPlateEnergyDensity
-    rtPlateForce = St7API.rtPlateForce
-    rtPlateMoment = St7API.rtPlateMoment
-    rtPlateCurvature = St7API.rtPlateCurvature
-    rtPlatePlyStress = St7API.rtPlatePlyStress
-    rtPlatePlyStrain = St7API.rtPlatePlyStrain
-    rtPlatePlyReserve = St7API.rtPlatePlyReserve
-    rtPlateFlux = St7API.rtPlateFlux
-    rtPlateGradient = St7API.rtPlateGradient
-    rtPlateRCDesign = St7API.rtPlateRCDesign
-    rtPlateCreepStrain = St7API.rtPlateCreepStrain
-    rtPlateSoil = St7API.rtPlateSoil
-    rtPlateUser = St7API.rtPlateUser
-    rtPlateNodeReact = St7API.rtPlateNodeReact
-    rtPlateNodeDisp = St7API.rtPlateNodeDisp
-    rtPlateNodeBirthDisp = St7API.rtPlateNodeBirthDisp
-    rtPlateEffectiveStress = St7API.rtPlateEffectiveStress
-    rtPlateEffectiveForce = St7API.rtPlateEffectiveForce
-    rtPlateNodeFlux = St7API.rtPlateNodeFlux
-    rtPlateTotalStrain = St7API.rtPlateTotalStrain
-    rtPlateTotalCurvature = St7API.rtPlateTotalCurvature
-    rtPlateEnergyIntegral = St7API.rtPlateEnergyIntegral
-
-
-class PlateResultSubType(enum.Enum):
-    stPlateLocal = St7API.stPlateLocal
-    stPlateGlobal = St7API.stPlateGlobal
-    stPlateCombined = St7API.stPlateCombined
-    stPlateSupport = St7API.stPlateSupport
-    stPlateDevLocal = St7API.stPlateDevLocal
-    stPlateDevGlobal = St7API.stPlateDevGlobal
-    stPlateDevCombined = St7API.stPlateDevCombined
-    stPlateCavity = St7API.stPlateCavity
-
-
-class SampleLocation(enum.Enum):
-    spCentroid = St7API.spCentroid
-    spGaussPoints = St7API.spGaussPoints
-    spNodesAverageNever = St7API.spNodesAverageNever
-    spNodesAverageAll = St7API.spNodesAverageAll
-    spNodesAverageSame = St7API.spNodesAverageSame
-
-
-class PlateSurface(enum.Enum):
-    psPlateMidPlane = St7API.psPlateMidPlane
-    psPlateMinusZ = St7API.psPlateMinusZ
-    psPlatePlusZ = St7API.psPlatePlusZ
-
-
-class SolverDefaultLogical(enum.Enum):
-    spDoSturm = St7API.spDoSturm
-    spNonlinearMaterial = St7API.spNonlinearMaterial
-    spUnusedL3 = St7API.spUnusedL3
-    spNonlinearGeometry = St7API.spNonlinearGeometry
-    spUnusedL5 = St7API.spUnusedL5
-    spAddKg = St7API.spAddKg
-    spUnusedL7 = St7API.spUnusedL7
-    spCalcDampingRatios = St7API.spCalcDampingRatios
-    spIncludeLinkReactions = St7API.spIncludeLinkReactions
-    spFullSystemTransient = St7API.spFullSystemTransient
-    spNonlinearHeat = St7API.spNonlinearHeat
-    spLumpedLoadBeam = St7API.spLumpedLoadBeam
-    spLumpedLoadPlate = St7API.spLumpedLoadPlate
-    spUnusedL14 = St7API.spUnusedL14
-    spLumpedMassBeam = St7API.spLumpedMassBeam
-    spLumpedMassPlate = St7API.spLumpedMassPlate
-    spLumpedMassBrick = St7API.spLumpedMassBrick
-    spForceSingularityCheck = St7API.spForceSingularityCheck
-    spUnusedL19 = St7API.spUnusedL19
-    spSaveRestartFile = St7API.spSaveRestartFile
-    spSaveIntermediate = St7API.spSaveIntermediate
-    spExcludeMassX = St7API.spExcludeMassX
-    spExcludeMassY = St7API.spExcludeMassY
-    spExcludeMassZ = St7API.spExcludeMassZ
-    spSaveSRSSSpectral = St7API.spSaveSRSSSpectral
-    spSaveCQCSpectral = St7API.spSaveCQCSpectral
-    spDoResidualsCheck = St7API.spDoResidualsCheck
-    spSuppressAllSingularities = St7API.spSuppressAllSingularities
-    spAutoPCGIterations = St7API.spAutoPCGIterations
-    spUnusedL30 = St7API.spUnusedL30
-    spReducedLogFile = St7API.spReducedLogFile
-    spIncludeRotationalMass = St7API.spIncludeRotationalMass
-    spIgnoreCompressiveBeamKg = St7API.spIgnoreCompressiveBeamKg
-    spAutoScaleKg = St7API.spAutoScaleKg
-    spUnusedL35 = St7API.spUnusedL35
-    spScaleSupports = St7API.spScaleSupports
-    spAutoShift = St7API.spAutoShift
-    spSaveTableInsertedSteps = St7API.spSaveTableInsertedSteps
-    spSaveLastRestartStep = St7API.spSaveLastRestartStep
-    spUnusedL40 = St7API.spUnusedL40
-    spDoInstantNTA = St7API.spDoInstantNTA
-    spAllowExtraIterations = St7API.spAllowExtraIterations
-    spPredictImpact = St7API.spPredictImpact
-    spAutoWorkingSet = St7API.spAutoWorkingSet
-    spDampingForce = St7API.spDampingForce
-    spLimitDisplacementNLA = St7API.spLimitDisplacementNLA
-    spLimitRotationNLA = St7API.spLimitRotationNLA
-    spSaveFinalSubStep = St7API.spSaveFinalSubStep
-    spCablesAsMultiCase = St7API.spCablesAsMultiCase
-    spShowMessages = St7API.spShowMessages
-    spShowProgress = St7API.spShowProgress
-    spShowConvergenceGraph = St7API.spShowConvergenceGraph
-    spUnusedL53 = St7API.spUnusedL53
-    spSpectralBaseExcitation = St7API.spSpectralBaseExcitation
-    spSpectralLoadExcitation = St7API.spSpectralLoadExcitation
-    spUnusedL56 = St7API.spUnusedL56
-    spCheckEigenvector = St7API.spCheckEigenvector
-    spAppendRemainingTime = St7API.spAppendRemainingTime
-    spIncludeFollowerLoadKG = St7API.spIncludeFollowerLoadKG
-    spInertiaForce = St7API.spInertiaForce
-    spSolverGeneratesCombinations = St7API.spSolverGeneratesCombinations
-    spAutoNewmarkAlpha = St7API.spAutoNewmarkAlpha
-
-
-class SolverDefaultInteger(enum.Enum):
-    spTreeStartNumber = St7API.spTreeStartNumber
-    spNumFrequency = St7API.spNumFrequency
-    spNumBucklingModes = St7API.spNumBucklingModes
-    spMaxIterationEig = St7API.spMaxIterationEig
-    spMaxIterationNonlin = St7API.spMaxIterationNonlin
-    spNumBeamSlicesModal = St7API.spNumBeamSlicesModal
-    spMaxConjugateGradientIter = St7API.spMaxConjugateGradientIter
-    spMaxNumRepeatedMessages = St7API.spMaxNumRepeatedMessages
-    spFiniteStrainDefinition = St7API.spFiniteStrainDefinition
-    spBeamLength = St7API.spBeamLength
-    spFormStiffMatrix = St7API.spFormStiffMatrix
-    spMaxUpdateInterval = St7API.spMaxUpdateInterval
-    spFormNonlinHeatStiffMatrix = St7API.spFormNonlinHeatStiffMatrix
-    spExpandWorkingSet = St7API.spExpandWorkingSet
-    spMinNumViscoUnits = St7API.spMinNumViscoUnits
-    spMaxNumViscoUnits = St7API.spMaxNumViscoUnits
-    spCurveFitTimeUnit = St7API.spCurveFitTimeUnit
-    spStaticAutoStepping = St7API.spStaticAutoStepping
-    spBeamKgType = St7API.spBeamKgType
-    spDynamicAutoStepping = St7API.spDynamicAutoStepping
-    spMaxIterationHeat = St7API.spMaxIterationHeat
-
-
-class TableType(enum.Enum):
-    ttVsTime = St7API.ttVsTime
-    ttVsTemperature = St7API.ttVsTemperature
-    ttVsFrequency = St7API.ttVsFrequency
-    ttStressStrain = St7API.ttStressStrain
-    ttForceDisplacement = St7API.ttForceDisplacement
-    ttMomentCurvature = St7API.ttMomentCurvature
-    ttMomentRotation = St7API.ttMomentRotation
-    ttAccVsTime = St7API.ttAccVsTime
-    ttForceVelocity = St7API.ttForceVelocity
-    ttVsPosition = St7API.ttVsPosition
-    ttStrainTime = St7API.ttStrainTime
-    ttDispVsTime = St7API.ttDispVsTime
-    ttVelVsTime = St7API.ttVelVsTime
-    ttVsVelocity = St7API.ttVsVelocity
-    ttTemperatureVsTime = St7API.ttTemperatureVsTime
+class AttributeType(enum.Enum):
+    aoRestraint = St7API.aoRestraint
+    aoForce = St7API.aoForce
+    aoMoment = St7API.aoMoment
+    aoTemperature = St7API.aoTemperature
+    aoMTranslation = St7API.aoMTranslation
+    aoMRotation = St7API.aoMRotation
+    aoKTranslation = St7API.aoKTranslation
+    aoKRotation = St7API.aoKRotation
+    aoDamping = St7API.aoDamping
+    aoNSMass = St7API.aoNSMass
+    aoNodeInfluence = St7API.aoNodeInfluence
+    aoNodeHeatSource = St7API.aoNodeHeatSource
+    aoNodeVelocity = St7API.aoNodeVelocity
+    aoNodeAcceleration = St7API.aoNodeAcceleration
+    aoVertexMeshSize = St7API.aoVertexMeshSize
 
 
 class BeamContour(enum.Enum):
@@ -303,6 +97,171 @@ class BeamContour(enum.Enum):
     ctBeamHeatFlux = St7API.ctBeamHeatFlux
     ctBeamHeatSource = St7API.ctBeamHeatSource
     ctBeamAgeAtFirstLoading = St7API.ctBeamAgeAtFirstLoading
+
+
+class BrickContour(enum.Enum):
+    ctBrickNone = St7API.ctBrickNone
+    ctBrickAspectRatioMin = St7API.ctBrickAspectRatioMin
+    ctBrickAspectRatioMax = St7API.ctBrickAspectRatioMax
+    ctBrickDeterminant = St7API.ctBrickDeterminant
+    ctBrickInternalAngle = St7API.ctBrickInternalAngle
+    ctBrickMixedProduct = St7API.ctBrickMixedProduct
+    ctBrickDihedral = St7API.ctBrickDihedral
+    ctBrickVolume = St7API.ctBrickVolume
+    ctBrickAxis1 = St7API.ctBrickAxis1
+    ctBrickAxis2 = St7API.ctBrickAxis2
+    ctBrickAxis3 = St7API.ctBrickAxis3
+    ctBrickNormalSupport = St7API.ctBrickNormalSupport
+    ctBrickLateralSupport = St7API.ctBrickLateralSupport
+    ctBrickSupportGap = St7API.ctBrickSupportGap
+    ctBrickTemperature = St7API.ctBrickTemperature
+    ctBrickPreStressX = St7API.ctBrickPreStressX
+    ctBrickPreStressY = St7API.ctBrickPreStressY
+    ctBrickPreStressZ = St7API.ctBrickPreStressZ
+    ctBrickPreStressMagnitude = St7API.ctBrickPreStressMagnitude
+    ctBrickPreStrainX = St7API.ctBrickPreStrainX
+    ctBrickPreStrainY = St7API.ctBrickPreStrainY
+    ctBrickPreStrainZ = St7API.ctBrickPreStrainZ
+    ctBrickPreStrainMagnitude = St7API.ctBrickPreStrainMagnitude
+    ctBrickNormalPressure = St7API.ctBrickNormalPressure
+    ctBrickGlobalPressureX = St7API.ctBrickGlobalPressureX
+    ctBrickGlobalPressureY = St7API.ctBrickGlobalPressureY
+    ctBrickGlobalPressureZ = St7API.ctBrickGlobalPressureZ
+    ctBrickGlobalPressureMagnitude = St7API.ctBrickGlobalPressureMagnitude
+    ctBrickShearX = St7API.ctBrickShearX
+    ctBrickShearY = St7API.ctBrickShearY
+    ctBrickShearMagnitude = St7API.ctBrickShearMagnitude
+    ctBrickNSMass = St7API.ctBrickNSMass
+    ctBrickDynamicFactor = St7API.ctBrickDynamicFactor
+    ctBrickConvectionCoeff = St7API.ctBrickConvectionCoeff
+    ctBrickConvectionAmbient = St7API.ctBrickConvectionAmbient
+    ctBrickRadiationCoeff = St7API.ctBrickRadiationCoeff
+    ctBrickRadiationAmbient = St7API.ctBrickRadiationAmbient
+    ctBrickHeatFlux = St7API.ctBrickHeatFlux
+    ctBrickHeatSource = St7API.ctBrickHeatSource
+    ctBrickSoilStressSV = St7API.ctBrickSoilStressSV
+    ctBrickSoilStressK0 = St7API.ctBrickSoilStressK0
+    ctBrickSoilStressSH = St7API.ctBrickSoilStressSH
+    ctBrickSoilRatioOCR = St7API.ctBrickSoilRatioOCR
+    ctBrickSoilRatioE0 = St7API.ctBrickSoilRatioE0
+    ctBrickSoilFluidLevel = St7API.ctBrickSoilFluidLevel
+    ctBrickAgeAtFirstLoading = St7API.ctBrickAgeAtFirstLoading
+
+
+class Entity(enum.Enum):
+    tyNODE = St7API.tyNODE
+    tyBEAM = St7API.tyBEAM
+    tyPLATE = St7API.tyPLATE
+    tyBRICK = St7API.tyBRICK
+    tyLINK = St7API.tyLINK
+    tyVERTEX = St7API.tyVERTEX
+    tyGEOMETRYEDGE = St7API.tyGEOMETRYEDGE
+    tyGEOMETRYFACE = St7API.tyGEOMETRYFACE
+    tyLOADPATH = St7API.tyLOADPATH
+    tyGEOMETRYCOEDGE = St7API.tyGEOMETRYCOEDGE
+    tyGEOMETRYLOOP = St7API.tyGEOMETRYLOOP
+
+
+class GlobalInteger(enum.Enum):
+    ivTessellationsFailed = St7API.ivTessellationsFailed
+    ivSeamsAdded = St7API.ivSeamsAdded
+    ivIntersectionsFound = St7API.ivIntersectionsFound
+    ivPlateEdgesAssigned = St7API.ivPlateEdgesAssigned
+    ivPlateEdgesNotFullyAssigned = St7API.ivPlateEdgesNotFullyAssigned
+    ivAttachmentsCreated = St7API.ivAttachmentsCreated
+    ivAttachmentsFailed = St7API.ivAttachmentsFailed
+    ivNodesCreated = St7API.ivNodesCreated
+    ivNodesDeleted = St7API.ivNodesDeleted
+    ivNodesMoved = St7API.ivNodesMoved
+    ivBeamsChanged = St7API.ivBeamsChanged
+    ivBeamsCollapsed = St7API.ivBeamsCollapsed
+    ivBeamsCreated = St7API.ivBeamsCreated
+    ivBeamsDeleted = St7API.ivBeamsDeleted
+    ivBeamsFailed = St7API.ivBeamsFailed
+    ivBeamsMoved = St7API.ivBeamsMoved
+    ivBeamsSplit = St7API.ivBeamsSplit
+    ivBeamsSubdivided = St7API.ivBeamsSubdivided
+    ivPlatesChanged = St7API.ivPlatesChanged
+    ivPlatesCollapsed = St7API.ivPlatesCollapsed
+    ivPlatesCreated = St7API.ivPlatesCreated
+    ivPlatesDeleted = St7API.ivPlatesDeleted
+    ivPlatesFailed = St7API.ivPlatesFailed
+    ivPlatesGraded = St7API.ivPlatesGraded
+    ivPlatesMoved = St7API.ivPlatesMoved
+    ivPlatesSplit = St7API.ivPlatesSplit
+    ivPlatesSubdivided = St7API.ivPlatesSubdivided
+    ivBricksChanged = St7API.ivBricksChanged
+    ivBricksCollapsed = St7API.ivBricksCollapsed
+    ivBricksCreated = St7API.ivBricksCreated
+    ivBricksDeleted = St7API.ivBricksDeleted
+    ivBricksFailed = St7API.ivBricksFailed
+    ivBricksGraded = St7API.ivBricksGraded
+    ivBricksMoved = St7API.ivBricksMoved
+    ivBricksSplit = St7API.ivBricksSplit
+    ivBricksSubdivided = St7API.ivBricksSubdivided
+    ivLinksChanged = St7API.ivLinksChanged
+    ivLinksCollapsed = St7API.ivLinksCollapsed
+    ivLinksCreated = St7API.ivLinksCreated
+    ivLinksDeleted = St7API.ivLinksDeleted
+    ivLinksMoved = St7API.ivLinksMoved
+    ivLoadPathsChanged = St7API.ivLoadPathsChanged
+    ivLoadPathsCreated = St7API.ivLoadPathsCreated
+    ivLoadPathsMoved = St7API.ivLoadPathsMoved
+    ivFacesChanged = St7API.ivFacesChanged
+    ivFacesCreated = St7API.ivFacesCreated
+    ivFacesDeleted = St7API.ivFacesDeleted
+    ivFacesFailed = St7API.ivFacesFailed
+    ivFacesMoved = St7API.ivFacesMoved
+    ivEdgesMorphed = St7API.ivEdgesMorphed
+    ivEdgesSubdivided = St7API.ivEdgesSubdivided
+    ivLoopsDeleted = St7API.ivLoopsDeleted
+    ivAttributesApplied = St7API.ivAttributesApplied
+    ivUCSCreated = St7API.ivUCSCreated
+    ivPatchPlatesCreated = St7API.ivPatchPlatesCreated
+    ivLoadCasesCreated = St7API.ivLoadCasesCreated
+    ivFilletsCreated = St7API.ivFilletsCreated
+    ivFilletsFailed = St7API.ivFilletsFailed
+    ivLoftSeriesFound = St7API.ivLoftSeriesFound
+    ivDuplicateBeamsDeleted = St7API.ivDuplicateBeamsDeleted
+    ivDuplicatePlatesDeleted = St7API.ivDuplicatePlatesDeleted
+    ivDuplicateBricksDeleted = St7API.ivDuplicateBricksDeleted
+    ivDuplicateLinksDeleted = St7API.ivDuplicateLinksDeleted
+    ivStringGroupsPacked = St7API.ivStringGroupsPacked
+    ivClipboardNodes = St7API.ivClipboardNodes
+    ivClipboardBeams = St7API.ivClipboardBeams
+    ivClipboardPlates = St7API.ivClipboardPlates
+    ivClipboardBricks = St7API.ivClipboardBricks
+    ivClipboardLinks = St7API.ivClipboardLinks
+    ivClipboardLoadPaths = St7API.ivClipboardLoadPaths
+    ivClipboardFaces = St7API.ivClipboardFaces
+    ivClipboardVertices = St7API.ivClipboardVertices
+    ivFacesMeshed = St7API.ivFacesMeshed
+    ivFacesPartiallyMeshed = St7API.ivFacesPartiallyMeshed
+    ivFacesNotMeshed = St7API.ivFacesNotMeshed
+    ivSolverTerminationCode = St7API.ivSolverTerminationCode
+    ivSolidsMeshed = St7API.ivSolidsMeshed
+    ivSolidsPartiallyMeshed = St7API.ivSolidsPartiallyMeshed
+    ivSolidsNotMeshed = St7API.ivSolidsNotMeshed
+
+
+class ImageType(enum.Enum):
+    itBitmap8Bit = St7API.itBitmap8Bit
+    itBitmap16Bit = St7API.itBitmap16Bit
+    itBitmap24Bit = St7API.itBitmap24Bit
+    itJPEG = St7API.itJPEG
+    itPNG = St7API.itPNG
+
+
+class NodeResultType(enum.Enum):
+    rtNodeDisp = St7API.rtNodeDisp
+    rtNodeVel = St7API.rtNodeVel
+    rtNodeAcc = St7API.rtNodeAcc
+    rtNodePhase = St7API.rtNodePhase
+    rtNodeReact = St7API.rtNodeReact
+    rtNodeTemp = St7API.rtNodeTemp
+    rtNodeFlux = St7API.rtNodeFlux
+    rtNodeInertia = St7API.rtNodeInertia
+    rtNodeInfluence = St7API.rtNodeInfluence
 
 
 class PlateContour(enum.Enum):
@@ -398,79 +357,74 @@ class PlateContour(enum.Enum):
     ctPlateAgeAtFirstLoading = St7API.ctPlateAgeAtFirstLoading
 
 
-class BrickContour(enum.Enum):
-    ctBrickNone = St7API.ctBrickNone
-    ctBrickAspectRatioMin = St7API.ctBrickAspectRatioMin
-    ctBrickAspectRatioMax = St7API.ctBrickAspectRatioMax
-    ctBrickDeterminant = St7API.ctBrickDeterminant
-    ctBrickInternalAngle = St7API.ctBrickInternalAngle
-    ctBrickMixedProduct = St7API.ctBrickMixedProduct
-    ctBrickDihedral = St7API.ctBrickDihedral
-    ctBrickVolume = St7API.ctBrickVolume
-    ctBrickAxis1 = St7API.ctBrickAxis1
-    ctBrickAxis2 = St7API.ctBrickAxis2
-    ctBrickAxis3 = St7API.ctBrickAxis3
-    ctBrickNormalSupport = St7API.ctBrickNormalSupport
-    ctBrickLateralSupport = St7API.ctBrickLateralSupport
-    ctBrickSupportGap = St7API.ctBrickSupportGap
-    ctBrickTemperature = St7API.ctBrickTemperature
-    ctBrickPreStressX = St7API.ctBrickPreStressX
-    ctBrickPreStressY = St7API.ctBrickPreStressY
-    ctBrickPreStressZ = St7API.ctBrickPreStressZ
-    ctBrickPreStressMagnitude = St7API.ctBrickPreStressMagnitude
-    ctBrickPreStrainX = St7API.ctBrickPreStrainX
-    ctBrickPreStrainY = St7API.ctBrickPreStrainY
-    ctBrickPreStrainZ = St7API.ctBrickPreStrainZ
-    ctBrickPreStrainMagnitude = St7API.ctBrickPreStrainMagnitude
-    ctBrickNormalPressure = St7API.ctBrickNormalPressure
-    ctBrickGlobalPressureX = St7API.ctBrickGlobalPressureX
-    ctBrickGlobalPressureY = St7API.ctBrickGlobalPressureY
-    ctBrickGlobalPressureZ = St7API.ctBrickGlobalPressureZ
-    ctBrickGlobalPressureMagnitude = St7API.ctBrickGlobalPressureMagnitude
-    ctBrickShearX = St7API.ctBrickShearX
-    ctBrickShearY = St7API.ctBrickShearY
-    ctBrickShearMagnitude = St7API.ctBrickShearMagnitude
-    ctBrickNSMass = St7API.ctBrickNSMass
-    ctBrickDynamicFactor = St7API.ctBrickDynamicFactor
-    ctBrickConvectionCoeff = St7API.ctBrickConvectionCoeff
-    ctBrickConvectionAmbient = St7API.ctBrickConvectionAmbient
-    ctBrickRadiationCoeff = St7API.ctBrickRadiationCoeff
-    ctBrickRadiationAmbient = St7API.ctBrickRadiationAmbient
-    ctBrickHeatFlux = St7API.ctBrickHeatFlux
-    ctBrickHeatSource = St7API.ctBrickHeatSource
-    ctBrickSoilStressSV = St7API.ctBrickSoilStressSV
-    ctBrickSoilStressK0 = St7API.ctBrickSoilStressK0
-    ctBrickSoilStressSH = St7API.ctBrickSoilStressSH
-    ctBrickSoilRatioOCR = St7API.ctBrickSoilRatioOCR
-    ctBrickSoilRatioE0 = St7API.ctBrickSoilRatioE0
-    ctBrickSoilFluidLevel = St7API.ctBrickSoilFluidLevel
-    ctBrickAgeAtFirstLoading = St7API.ctBrickAgeAtFirstLoading
+class PlateResultSubType(enum.Enum):
+    stPlateLocal = St7API.stPlateLocal
+    stPlateGlobal = St7API.stPlateGlobal
+    stPlateCombined = St7API.stPlateCombined
+    stPlateSupport = St7API.stPlateSupport
+    stPlateDevLocal = St7API.stPlateDevLocal
+    stPlateDevGlobal = St7API.stPlateDevGlobal
+    stPlateDevCombined = St7API.stPlateDevCombined
+    stPlateCavity = St7API.stPlateCavity
 
 
-class AttributeType(enum.Enum):
-    aoRestraint = St7API.aoRestraint
-    aoForce = St7API.aoForce
-    aoMoment = St7API.aoMoment
-    aoTemperature = St7API.aoTemperature
-    aoMTranslation = St7API.aoMTranslation
-    aoMRotation = St7API.aoMRotation
-    aoKTranslation = St7API.aoKTranslation
-    aoKRotation = St7API.aoKRotation
-    aoDamping = St7API.aoDamping
-    aoNSMass = St7API.aoNSMass
-    aoNodeInfluence = St7API.aoNodeInfluence
-    aoNodeHeatSource = St7API.aoNodeHeatSource
-    aoNodeVelocity = St7API.aoNodeVelocity
-    aoNodeAcceleration = St7API.aoNodeAcceleration
-    aoVertexMeshSize = St7API.aoVertexMeshSize
+class PlateResultType(enum.Enum):
+    rtPlateStress = St7API.rtPlateStress
+    rtPlateStrain = St7API.rtPlateStrain
+    rtPlateEnergyDensity = St7API.rtPlateEnergyDensity
+    rtPlateForce = St7API.rtPlateForce
+    rtPlateMoment = St7API.rtPlateMoment
+    rtPlateCurvature = St7API.rtPlateCurvature
+    rtPlatePlyStress = St7API.rtPlatePlyStress
+    rtPlatePlyStrain = St7API.rtPlatePlyStrain
+    rtPlatePlyReserve = St7API.rtPlatePlyReserve
+    rtPlateFlux = St7API.rtPlateFlux
+    rtPlateGradient = St7API.rtPlateGradient
+    rtPlateRCDesign = St7API.rtPlateRCDesign
+    rtPlateCreepStrain = St7API.rtPlateCreepStrain
+    rtPlateSoil = St7API.rtPlateSoil
+    rtPlateUser = St7API.rtPlateUser
+    rtPlateNodeReact = St7API.rtPlateNodeReact
+    rtPlateNodeDisp = St7API.rtPlateNodeDisp
+    rtPlateNodeBirthDisp = St7API.rtPlateNodeBirthDisp
+    rtPlateEffectiveStress = St7API.rtPlateEffectiveStress
+    rtPlateEffectiveForce = St7API.rtPlateEffectiveForce
+    rtPlateNodeFlux = St7API.rtPlateNodeFlux
+    rtPlateTotalStrain = St7API.rtPlateTotalStrain
+    rtPlateTotalCurvature = St7API.rtPlateTotalCurvature
+    rtPlateEnergyIntegral = St7API.rtPlateEnergyIntegral
 
 
-class ImageType(enum.Enum):
-    itBitmap8Bit = St7API.itBitmap8Bit
-    itBitmap16Bit = St7API.itBitmap16Bit
-    itBitmap24Bit = St7API.itBitmap24Bit
-    itJPEG = St7API.itJPEG
-    itPNG = St7API.itPNG
+class PlateSurface(enum.Enum):
+    psPlateMidPlane = St7API.psPlateMidPlane
+    psPlateMinusZ = St7API.psPlateMinusZ
+    psPlatePlusZ = St7API.psPlatePlusZ
+
+
+class PreLoadType(enum.Enum):
+    plBeamPreTension = St7API.plBeamPreTension
+    plBeamPreStrain = St7API.plBeamPreStrain
+    plPlatePreStress = St7API.plPlatePreStress
+    plPlatePreStrain = St7API.plPlatePreStrain
+    plBrickPreStress = St7API.plBrickPreStress
+    plBrickPreStrain = St7API.plBrickPreStrain
+    plCavityPreStress = St7API.plCavityPreStress
+    plCavityPreStrain = St7API.plCavityPreStrain
+
+
+class Property(enum.Enum):
+    ptBEAMPROP = St7API.ptBEAMPROP
+    ptPLATEPROP = St7API.ptPLATEPROP
+    ptBRICKPROP = St7API.ptBRICKPROP
+    ptPLYPROP = St7API.ptPLYPROP
+
+
+class SampleLocation(enum.Enum):
+    spCentroid = St7API.spCentroid
+    spGaussPoints = St7API.spGaussPoints
+    spNodesAverageNever = St7API.spNodesAverageNever
+    spNodesAverageAll = St7API.spNodesAverageAll
+    spNodesAverageSame = St7API.spNodesAverageSame
 
 
 class ScaleType(enum.Enum):
@@ -478,83 +432,136 @@ class ScaleType(enum.Enum):
     dsAbsolute = St7API.dsAbsolute
 
 
-class GlobalInteger(enum.Enum):
-    ivTessellationsFailed = St7API.ivTessellationsFailed
-    ivSeamsAdded = St7API.ivSeamsAdded
-    ivIntersectionsFound = St7API.ivIntersectionsFound
-    ivPlateEdgesAssigned = St7API.ivPlateEdgesAssigned
-    ivPlateEdgesNotFullyAssigned = St7API.ivPlateEdgesNotFullyAssigned
-    ivAttachmentsCreated = St7API.ivAttachmentsCreated
-    ivAttachmentsFailed = St7API.ivAttachmentsFailed
-    ivNodesCreated = St7API.ivNodesCreated
-    ivNodesDeleted = St7API.ivNodesDeleted
-    ivNodesMoved = St7API.ivNodesMoved
-    ivBeamsChanged = St7API.ivBeamsChanged
-    ivBeamsCollapsed = St7API.ivBeamsCollapsed
-    ivBeamsCreated = St7API.ivBeamsCreated
-    ivBeamsDeleted = St7API.ivBeamsDeleted
-    ivBeamsFailed = St7API.ivBeamsFailed
-    ivBeamsMoved = St7API.ivBeamsMoved
-    ivBeamsSplit = St7API.ivBeamsSplit
-    ivBeamsSubdivided = St7API.ivBeamsSubdivided
-    ivPlatesChanged = St7API.ivPlatesChanged
-    ivPlatesCollapsed = St7API.ivPlatesCollapsed
-    ivPlatesCreated = St7API.ivPlatesCreated
-    ivPlatesDeleted = St7API.ivPlatesDeleted
-    ivPlatesFailed = St7API.ivPlatesFailed
-    ivPlatesGraded = St7API.ivPlatesGraded
-    ivPlatesMoved = St7API.ivPlatesMoved
-    ivPlatesSplit = St7API.ivPlatesSplit
-    ivPlatesSubdivided = St7API.ivPlatesSubdivided
-    ivBricksChanged = St7API.ivBricksChanged
-    ivBricksCollapsed = St7API.ivBricksCollapsed
-    ivBricksCreated = St7API.ivBricksCreated
-    ivBricksDeleted = St7API.ivBricksDeleted
-    ivBricksFailed = St7API.ivBricksFailed
-    ivBricksGraded = St7API.ivBricksGraded
-    ivBricksMoved = St7API.ivBricksMoved
-    ivBricksSplit = St7API.ivBricksSplit
-    ivBricksSubdivided = St7API.ivBricksSubdivided
-    ivLinksChanged = St7API.ivLinksChanged
-    ivLinksCollapsed = St7API.ivLinksCollapsed
-    ivLinksCreated = St7API.ivLinksCreated
-    ivLinksDeleted = St7API.ivLinksDeleted
-    ivLinksMoved = St7API.ivLinksMoved
-    ivLoadPathsChanged = St7API.ivLoadPathsChanged
-    ivLoadPathsCreated = St7API.ivLoadPathsCreated
-    ivLoadPathsMoved = St7API.ivLoadPathsMoved
-    ivFacesChanged = St7API.ivFacesChanged
-    ivFacesCreated = St7API.ivFacesCreated
-    ivFacesDeleted = St7API.ivFacesDeleted
-    ivFacesFailed = St7API.ivFacesFailed
-    ivFacesMoved = St7API.ivFacesMoved
-    ivEdgesMorphed = St7API.ivEdgesMorphed
-    ivEdgesSubdivided = St7API.ivEdgesSubdivided
-    ivLoopsDeleted = St7API.ivLoopsDeleted
-    ivAttributesApplied = St7API.ivAttributesApplied
-    ivUCSCreated = St7API.ivUCSCreated
-    ivPatchPlatesCreated = St7API.ivPatchPlatesCreated
-    ivLoadCasesCreated = St7API.ivLoadCasesCreated
-    ivFilletsCreated = St7API.ivFilletsCreated
-    ivFilletsFailed = St7API.ivFilletsFailed
-    ivLoftSeriesFound = St7API.ivLoftSeriesFound
-    ivDuplicateBeamsDeleted = St7API.ivDuplicateBeamsDeleted
-    ivDuplicatePlatesDeleted = St7API.ivDuplicatePlatesDeleted
-    ivDuplicateBricksDeleted = St7API.ivDuplicateBricksDeleted
-    ivDuplicateLinksDeleted = St7API.ivDuplicateLinksDeleted
-    ivStringGroupsPacked = St7API.ivStringGroupsPacked
-    ivClipboardNodes = St7API.ivClipboardNodes
-    ivClipboardBeams = St7API.ivClipboardBeams
-    ivClipboardPlates = St7API.ivClipboardPlates
-    ivClipboardBricks = St7API.ivClipboardBricks
-    ivClipboardLinks = St7API.ivClipboardLinks
-    ivClipboardLoadPaths = St7API.ivClipboardLoadPaths
-    ivClipboardFaces = St7API.ivClipboardFaces
-    ivClipboardVertices = St7API.ivClipboardVertices
-    ivFacesMeshed = St7API.ivFacesMeshed
-    ivFacesPartiallyMeshed = St7API.ivFacesPartiallyMeshed
-    ivFacesNotMeshed = St7API.ivFacesNotMeshed
-    ivSolverTerminationCode = St7API.ivSolverTerminationCode
-    ivSolidsMeshed = St7API.ivSolidsMeshed
-    ivSolidsPartiallyMeshed = St7API.ivSolidsPartiallyMeshed
-    ivSolidsNotMeshed = St7API.ivSolidsNotMeshed
+class SolverDefaultInteger(enum.Enum):
+    spTreeStartNumber = St7API.spTreeStartNumber
+    spNumFrequency = St7API.spNumFrequency
+    spNumBucklingModes = St7API.spNumBucklingModes
+    spMaxIterationEig = St7API.spMaxIterationEig
+    spMaxIterationNonlin = St7API.spMaxIterationNonlin
+    spNumBeamSlicesModal = St7API.spNumBeamSlicesModal
+    spMaxConjugateGradientIter = St7API.spMaxConjugateGradientIter
+    spMaxNumRepeatedMessages = St7API.spMaxNumRepeatedMessages
+    spFiniteStrainDefinition = St7API.spFiniteStrainDefinition
+    spBeamLength = St7API.spBeamLength
+    spFormStiffMatrix = St7API.spFormStiffMatrix
+    spMaxUpdateInterval = St7API.spMaxUpdateInterval
+    spFormNonlinHeatStiffMatrix = St7API.spFormNonlinHeatStiffMatrix
+    spExpandWorkingSet = St7API.spExpandWorkingSet
+    spMinNumViscoUnits = St7API.spMinNumViscoUnits
+    spMaxNumViscoUnits = St7API.spMaxNumViscoUnits
+    spCurveFitTimeUnit = St7API.spCurveFitTimeUnit
+    spStaticAutoStepping = St7API.spStaticAutoStepping
+    spBeamKgType = St7API.spBeamKgType
+    spDynamicAutoStepping = St7API.spDynamicAutoStepping
+    spMaxIterationHeat = St7API.spMaxIterationHeat
+
+
+class SolverDefaultLogical(enum.Enum):
+    spDoSturm = St7API.spDoSturm
+    spNonlinearMaterial = St7API.spNonlinearMaterial
+    spUnusedL3 = St7API.spUnusedL3
+    spNonlinearGeometry = St7API.spNonlinearGeometry
+    spUnusedL5 = St7API.spUnusedL5
+    spAddKg = St7API.spAddKg
+    spUnusedL7 = St7API.spUnusedL7
+    spCalcDampingRatios = St7API.spCalcDampingRatios
+    spIncludeLinkReactions = St7API.spIncludeLinkReactions
+    spFullSystemTransient = St7API.spFullSystemTransient
+    spNonlinearHeat = St7API.spNonlinearHeat
+    spLumpedLoadBeam = St7API.spLumpedLoadBeam
+    spLumpedLoadPlate = St7API.spLumpedLoadPlate
+    spUnusedL14 = St7API.spUnusedL14
+    spLumpedMassBeam = St7API.spLumpedMassBeam
+    spLumpedMassPlate = St7API.spLumpedMassPlate
+    spLumpedMassBrick = St7API.spLumpedMassBrick
+    spForceSingularityCheck = St7API.spForceSingularityCheck
+    spUnusedL19 = St7API.spUnusedL19
+    spSaveRestartFile = St7API.spSaveRestartFile
+    spSaveIntermediate = St7API.spSaveIntermediate
+    spExcludeMassX = St7API.spExcludeMassX
+    spExcludeMassY = St7API.spExcludeMassY
+    spExcludeMassZ = St7API.spExcludeMassZ
+    spSaveSRSSSpectral = St7API.spSaveSRSSSpectral
+    spSaveCQCSpectral = St7API.spSaveCQCSpectral
+    spDoResidualsCheck = St7API.spDoResidualsCheck
+    spSuppressAllSingularities = St7API.spSuppressAllSingularities
+    spAutoPCGIterations = St7API.spAutoPCGIterations
+    spUnusedL30 = St7API.spUnusedL30
+    spReducedLogFile = St7API.spReducedLogFile
+    spIncludeRotationalMass = St7API.spIncludeRotationalMass
+    spIgnoreCompressiveBeamKg = St7API.spIgnoreCompressiveBeamKg
+    spAutoScaleKg = St7API.spAutoScaleKg
+    spUnusedL35 = St7API.spUnusedL35
+    spScaleSupports = St7API.spScaleSupports
+    spAutoShift = St7API.spAutoShift
+    spSaveTableInsertedSteps = St7API.spSaveTableInsertedSteps
+    spSaveLastRestartStep = St7API.spSaveLastRestartStep
+    spUnusedL40 = St7API.spUnusedL40
+    spDoInstantNTA = St7API.spDoInstantNTA
+    spAllowExtraIterations = St7API.spAllowExtraIterations
+    spPredictImpact = St7API.spPredictImpact
+    spAutoWorkingSet = St7API.spAutoWorkingSet
+    spDampingForce = St7API.spDampingForce
+    spLimitDisplacementNLA = St7API.spLimitDisplacementNLA
+    spLimitRotationNLA = St7API.spLimitRotationNLA
+    spSaveFinalSubStep = St7API.spSaveFinalSubStep
+    spCablesAsMultiCase = St7API.spCablesAsMultiCase
+    spShowMessages = St7API.spShowMessages
+    spShowProgress = St7API.spShowProgress
+    spShowConvergenceGraph = St7API.spShowConvergenceGraph
+    spUnusedL53 = St7API.spUnusedL53
+    spSpectralBaseExcitation = St7API.spSpectralBaseExcitation
+    spSpectralLoadExcitation = St7API.spSpectralLoadExcitation
+    spUnusedL56 = St7API.spUnusedL56
+    spCheckEigenvector = St7API.spCheckEigenvector
+    spAppendRemainingTime = St7API.spAppendRemainingTime
+    spIncludeFollowerLoadKG = St7API.spIncludeFollowerLoadKG
+    spInertiaForce = St7API.spInertiaForce
+    spSolverGeneratesCombinations = St7API.spSolverGeneratesCombinations
+    spAutoNewmarkAlpha = St7API.spAutoNewmarkAlpha
+
+
+class SolverMode(enum.Enum):
+    smNormalRun = St7API.smNormalRun
+    smProgressRun = St7API.smProgressRun
+    smBackgroundRun = St7API.smBackgroundRun
+    smNormalCloseRun = St7API.smNormalCloseRun
+
+
+class SolverType(enum.Enum):
+    stLinearStatic = St7API.stLinearStatic
+    stLinearBuckling = St7API.stLinearBuckling
+    stNonlinearStatic = St7API.stNonlinearStatic
+    stNaturalFrequency = St7API.stNaturalFrequency
+    stHarmonicResponse = St7API.stHarmonicResponse
+    stSpectralResponse = St7API.stSpectralResponse
+    stLinearTransientDynamic = St7API.stLinearTransientDynamic
+    stNonlinearTransientDynamic = St7API.stNonlinearTransientDynamic
+    stSteadyHeat = St7API.stSteadyHeat
+    stTransientHeat = St7API.stTransientHeat
+    stLoadInfluence = St7API.stLoadInfluence
+    stQuasiStatic = St7API.stQuasiStatic
+
+
+class TableType(enum.Enum):
+    ttVsTime = St7API.ttVsTime
+    ttVsTemperature = St7API.ttVsTemperature
+    ttVsFrequency = St7API.ttVsFrequency
+    ttStressStrain = St7API.ttStressStrain
+    ttForceDisplacement = St7API.ttForceDisplacement
+    ttMomentCurvature = St7API.ttMomentCurvature
+    ttMomentRotation = St7API.ttMomentRotation
+    ttAccVsTime = St7API.ttAccVsTime
+    ttForceVelocity = St7API.ttForceVelocity
+    ttVsPosition = St7API.ttVsPosition
+    ttStrainTime = St7API.ttStrainTime
+    ttDispVsTime = St7API.ttDispVsTime
+    ttVelVsTime = St7API.ttVelVsTime
+    ttVsVelocity = St7API.ttVsVelocity
+    ttTemperatureVsTime = St7API.ttTemperatureVsTime
+
+
+class WindowsRefreshMode(enum.Enum):
+    wrAutoRefresh = St7API.wrAutoRefresh
+    wrPauseClear = St7API.wrPauseClear
+    wrPauseNoClear = St7API.wrPauseNoClear
